@@ -16,7 +16,7 @@ def test_calcular_monto_ok(visitantes, expected_monto):
     assert monto == expected_monto, f"El monto calculado es {monto}, pero se esperaba {expected_monto}"
 
 def test_calcular_monto_error():
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="vacía"):
         calcular_monto([])
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="No se pueden procesar más de 10 visitantes"):
         calcular_monto([Visitante(20, VIP)] * 11)
