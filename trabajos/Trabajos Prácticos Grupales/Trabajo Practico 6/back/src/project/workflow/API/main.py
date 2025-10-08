@@ -1,11 +1,21 @@
 from fastapi import FastAPI
+from typing import Dict, Any
 from src.common.entradas import PRECIO_GENERAL, PRECIO_VIP
 from src.project.entities.Visitante import Visitante
 from src.project.workflow.compra import calcular_monto
 from src.common.utils import validar_fecha
 from src.common.counter import UniqueCounter
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # o ["http://localhost:3000"] si usás React local
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+) 
 
 @app.post("/monto/")
 def realizar_compra(data: dict) -> float:
@@ -17,8 +27,8 @@ def obtener_monto_unico(data: dict) -> float:
     visitante = Visitante(**data)
     return visitante.monto
 
-@app.get("/menor_edad/")
-def obtener_menor_edad() -> float:
+@app.get("/menor_edad/", response_model=dict)
+def obtener_menor_edad() -> Dict[str, Any]:
     dic = {
         "bebes": {
             "rango": {
