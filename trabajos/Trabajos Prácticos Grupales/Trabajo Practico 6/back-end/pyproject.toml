@@ -1,5 +1,0 @@
-[tool.pytest.ini_options]
-# This tells pytest where to look for source code.
-pythonpath = ["."]
-# The default location for tests
-testpaths = ["test"]
