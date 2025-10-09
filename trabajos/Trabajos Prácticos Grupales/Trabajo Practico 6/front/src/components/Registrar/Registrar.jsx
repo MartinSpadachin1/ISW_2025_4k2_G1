@@ -1,9 +1,9 @@
-// Login.jsx
+// Registrar.jsx
 import React from "react";
-import Claudia from '../../assets/claudia.png';
+import Elefanta from '../../assets/elefanta.png';
 import { Link } from 'react-router-dom';
 
-export default function Login() {
+export default function Registrar() {
   return (
     <div
       className="w-100 d-flex align-items-center justify-content-center p-3 p-md-4"
@@ -19,7 +19,7 @@ export default function Login() {
         {/* Imagen: solo en desktop */}
         <div className="col-12 col-md-4 d-none d-md-flex">
           <img
-            src={Claudia}
+            src={Elefanta}
             alt="Claudia la leona en el parque"
             className="w-100 h-100"
             style={{
@@ -30,15 +30,27 @@ export default function Login() {
           />
         </div>
 
-        {/* Formulario */}
+        {/* Formulario de registro */}
         <div className="col-12 col-md-8 d-flex">
           <div
             className="card shadow w-100 border-0 rounded-3"
             style={{ backgroundColor: 'white' }}
           >
             <div className="card-body p-4 p-md-5 d-flex flex-column">
-              <h3 className="card-title text-center mb-4">Iniciar Sesión</h3>
+              <h3 className="card-title text-center mb-4">Registrarse</h3>
 
+              {/* Campo Nombre */}
+              <div className="mb-3">
+                <label htmlFor="nombre" className="form-label">Nombre</label>
+                <input
+                  type="text"
+                  id="nombre"
+                  className="form-control"
+                  placeholder="Ingresá tu nombre"
+                />
+              </div>
+
+              {/* Campo Email */}
               <div className="mb-3">
                 <label htmlFor="email" className="form-label">Email</label>
                 <input
@@ -49,6 +61,7 @@ export default function Login() {
                 />
               </div>
 
+              {/* Campo Contraseña */}
               <div className="mb-3">
                 <label htmlFor="password" className="form-label">Contraseña</label>
                 <input
@@ -59,21 +72,21 @@ export default function Login() {
                 />
               </div>
 
-              {/* Nuevo texto + enlace */}
+              {/* Texto + enlace a Iniciar Sesión */}
               <div className="text-center mb-3 mt-auto">
                 <p className="mb-1" style={{ fontSize: '0.95rem', color: '#555' }}>
-                  ¿Todavía no tenés una cuenta?
+                  ¿Ya tenés una cuenta?
                 </p>
                 <small>
-                  <Link to="/registrarse" className="text-decoration-none fw-semibold" style={{ color: '#3da35d' }}>
-                    Registrarse
+                  <Link to="/iniciar-sesion" className="text-decoration-none fw-semibold" style={{ color: '#3da35d' }}>
+                    Iniciar Sesión
                   </Link>
                 </small>
               </div>
 
               <div className="d-flex justify-content-between">
                 <button className="btn btn-secondary">Cancelar</button>
-                <button className="btn btn-success">Ingresar</button>
+                <button className="btn btn-success">Registrarse</button>
               </div>
             </div>
           </div>
