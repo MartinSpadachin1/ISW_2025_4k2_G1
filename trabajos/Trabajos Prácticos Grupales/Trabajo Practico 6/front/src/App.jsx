@@ -1,11 +1,10 @@
 import './App.css';
 import Navbar from './components/navbar/navbar';
 import Login from './components/login/login';
-import Footer from './components/Footer/Footer';
 import CompraEntradas from './components/compraEntradas/ComprarEntradas'; 
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LandingPage from './components/landingPage/landingPage';
-import FooterBanner from './components/Footer/FooterBanner/FooterBanner';
+import Footer from './components/Footer/Footer';
 
 function App() {
   return (
@@ -22,10 +21,9 @@ function App() {
           {/* Ruta para comprar entradas */}
           <Route path="/comprar-entradas" element={<CompraEntradas />} />
         </Routes>
+        <Footer />
       </BrowserRouter>
 
-      {/* <FooterBanner /> */}
-      <Footer />
     </>
   );
 }
