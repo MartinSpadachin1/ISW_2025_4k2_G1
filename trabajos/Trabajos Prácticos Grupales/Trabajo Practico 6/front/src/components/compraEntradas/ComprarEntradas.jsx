@@ -1,12 +1,13 @@
 // CompraEntradas.jsx
 import React, { useState } from "react";
 import Animalito from '../../assets/colibri.jpg'; 
-
+import ModalComprarEntradas from "./modalComprarEntradas";
 export default function CompraEntradas() {
   const [fecha, setFecha] = useState("");
   const [cantidad, setCantidad] = useState("");
   const [metodoPago, setMetodoPago] = useState("");
   const [cardIzquierda, setCardIzquierda] = useState(false);
+  const [mostrarModal, setMostrarModal] = useState(false);
 
   const fechaActual = new Date().toISOString().split("T")[0];
 
@@ -23,6 +24,7 @@ export default function CompraEntradas() {
     setCantidad("");
     setMetodoPago("");
     setCardIzquierda(false);
+    setMostrarModal(false);
   };
 
   const handleConfigurar = () => {
@@ -31,6 +33,11 @@ export default function CompraEntradas() {
       return;
     }
     setCardIzquierda(true);
+    setMostrarModal(true);
+  };
+  const cerrarModal = () => {
+    setMostrarModal(false);
+    setCardIzquierda(false);
   };
 
   return (
@@ -159,6 +166,12 @@ export default function CompraEntradas() {
           </div>
         </div>
       </div>
+            {mostrarModal && (
+        <ModalComprarEntradas
+          cantidad={cantidad}
+          onClose={cerrarModal}
+        />
+      )}
     </div>
   );
 }
