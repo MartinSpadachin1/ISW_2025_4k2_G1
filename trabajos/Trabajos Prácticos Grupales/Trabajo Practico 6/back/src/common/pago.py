@@ -1,0 +1,2 @@
+EFECTIVO = "efectivo"
+TARJETA = "tarjeta"

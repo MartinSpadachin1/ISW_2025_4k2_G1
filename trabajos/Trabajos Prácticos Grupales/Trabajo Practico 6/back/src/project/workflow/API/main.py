@@ -6,6 +6,8 @@ from src.project.workflow.compra import calcular_monto
 from src.common.utils import validar_fecha
 from src.common.counter import UniqueCounter
 from fastapi.middleware.cors import CORSMiddleware
+from src.common.pago import EFECTIVO, TARJETA
+from src.common.utils import validar_token
 
 app = FastAPI()
 
@@ -65,14 +67,27 @@ def obtener_menor_edad() -> Dict[str, Any]:
     }
     return dic
 
+"""
+{
+    "token": "string",
+    "fecha": "2023-10-10",
+    "visitantes": [
+        { "edad": 20, "tipo_entrada": "vip" },
+        { "edad": 25, "tipo_entrada": "general" },
+    ],
+    "forma_pago": "efectivo"
+}
 
+
+
+"""
 @app.post("/validar_compra/")
 def validar_compra(data: dict) -> dict:
     visitantes = [Visitante(**item) for item in data.get("visitantes", [])]
     fecha = data.get("fecha", "")
     unique = UniqueCounter()
     id = unique.next()
-    if validar_fecha(fecha) and len(visitantes) < 10:
+    if validar_fecha(fecha) and len(visitantes) < 10  and validar_token(data.get("token", "")) and data.get("forma_pago", "") in [EFECTIVO, TARJETA]:
         return {"valido": True,
                 "id_compra": id}
     else:

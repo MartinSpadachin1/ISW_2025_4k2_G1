@@ -6,6 +6,8 @@ class Visitante:
     def __init__(self, edad: int, tipo_entrada: str):
         """Inicializa un visitante con su edad, tipo de entrada y calcula el monto a pagar."""
         self.edad = edad
+        if not self.validar_edad():
+            raise ValueError("La edad debe estar entre 0 y 120 años.")
         self.tipo_entrada = tipo_entrada
         self.monto = self.calcular_monto(edad, tipo_entrada)
 
@@ -21,3 +23,12 @@ class Visitante:
         elif edad <= 3:
             return 0  # Entrada gratuita para menores de 3 años
         return precio
+    
+    
+    def validar_edad(self) -> bool:
+        """Valida que la edad esté en el rango permitido (0-120 años)."""
+        if self.edad is None:
+            raise ValueError("La edad debe estar entre 0 y 120 años.")
+        if not (0 <= self.edad <= 120):
+            return False
+        return True

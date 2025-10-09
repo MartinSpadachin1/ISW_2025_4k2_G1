@@ -36,3 +36,7 @@ def validar_fecha(fecha: Union[str, datetime.date]) -> bool:
         return False
 
     return True
+
+
+def validar_token(token: str) -> bool:
+    return True # Placeholder para validación de token, siempre devuelve True
