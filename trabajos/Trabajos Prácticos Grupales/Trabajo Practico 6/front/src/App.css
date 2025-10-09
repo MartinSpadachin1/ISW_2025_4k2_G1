@@ -1,4 +1,5 @@
 /* App.css */
+
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 * {
@@ -6,4 +7,26 @@
   margin: 0;
   box-sizing: border-box;
   font-family: "Montserrat", sans-serif;
+}
+
+/* FONDO GENERAL DE LA APP (SOLO EN BODY) */
+body {
+  background-image: url('./assets/hojas 1.png');
+  background-size: clamp(150px, 10vw, 300px); /* Responsive */
+  background-repeat: repeat;
+  background-attachment: fixed; /* Opcional: fija el fondo al scroll */
+  background-color: #ffffff; /* Color base si la imagen no carga */
+  /* Para hacerlo más sutil */
+  filter: brightness(0.95) saturate(0.8);
+}
+
+/* Asegurar que navbar y footer también tengan fondo sólido */
+.navbar {
+  background-color: #3da35d !important;
+  backdrop-filter: blur(2px);
+}
+
+.footer {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(2px);
 }

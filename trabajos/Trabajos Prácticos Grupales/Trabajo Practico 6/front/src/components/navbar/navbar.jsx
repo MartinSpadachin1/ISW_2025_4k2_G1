@@ -77,9 +77,8 @@ const Navbar = () => {
                     ? "/iniciar-sesion"
                     : "#"
                 }
-                className="btn text-white fw-semibold px-3 py-2"
+                className="btn btn-success text-white fw-semibold px-3 py-2"
                 style={{
-                  backgroundColor: "#3da35d",
                   border: "none",
                   fontSize: "0.95rem",
                   transition: "all 0.2s ease-in-out",

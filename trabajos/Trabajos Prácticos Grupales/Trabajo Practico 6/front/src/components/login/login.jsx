@@ -1,24 +1,45 @@
+// Login.jsx
 import React from "react";
+import Claudia from '../../assets/claudia.png';
 
 export default function Login() {
   return (
-    <div className="container-fluid d-flex align-items-center justify-content-center min-vh-100">
-      <div className="row w-100" style={{ maxWidth: "900px" }}>
-        {/* Columna del formulario */}
-        <div className="col-12 col-md-6">
-          <div
-            className="card shadow"
+    <div
+      className="w-100 d-flex align-items-center justify-content-center p-3 p-md-4"
+      style={{
+        minHeight: '100vh',
+        paddingTop: '80px',    // ≈ altura del navbar
+        paddingBottom: '80px', // ≈ altura del footer
+        boxSizing: 'border-box',
+      }}
+    >
+      {/* Contenedor principal: 1/3 imagen + 2/3 formulario en desktop */}
+      <div className="row w-100 g-0" style={{ maxWidth: '1200px' }}>
+        {/* Imagen: 12/12 en móvil (oculta), 4/12 en desktop */}
+        <div className="col-12 col-md-4 d-none d-md-flex">
+          <img
+            src={Claudia}
+            alt="Claudia la leona en el parque"
+            className="w-100 h-100"
             style={{
-              borderRadius: "1rem",
+              objectFit: 'cover',
+              maxHeight: '80vh',
+              borderRadius: '12px 0 0 12px',
             }}
+          />
+        </div>
+
+        {/* Formulario: 12/12 en móvil, 8/12 en desktop */}
+        <div className="col-12 col-md-8 d-flex">
+          <div
+            className="card shadow w-100 border-0 rounded-3"
+            style={{ backgroundColor: 'white' }}
           >
-            <div className="card-body p-4">
+            <div className="card-body p-4 p-md-5 d-flex flex-column">
               <h3 className="card-title text-center mb-4">Iniciar Sesión</h3>
 
               <div className="mb-3">
-                <label htmlFor="email" className="form-label">
-                  Email
-                </label>
+                <label htmlFor="email" className="form-label">Email</label>
                 <input
                   type="email"
                   id="email"
@@ -28,9 +49,7 @@ export default function Login() {
               </div>
 
               <div className="mb-3">
-                <label htmlFor="password" className="form-label">
-                  Contraseña
-                </label>
+                <label htmlFor="password" className="form-label">Contraseña</label>
                 <input
                   type="password"
                   id="password"
@@ -39,11 +58,9 @@ export default function Login() {
                 />
               </div>
 
-              <div className="text-center mb-3">
+              <div className="text-center mb-3 mt-auto">
                 <small>
-                  <a href="#" className="text-decoration-none">
-                    Registrarse
-                  </a>
+                  <a href="#" className="text-decoration-none">Registrarse</a>
                 </small>
               </div>
 
@@ -53,16 +70,6 @@ export default function Login() {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Columna de la imagen */}
-        <div className="col-12 col-md-6 d-none d-md-flex align-items-center justify-content-center">
-          <img
-            src="https://via.placeholder.com/400x500?text=Imagen+Login" // Reemplaza con tu imagen real
-            alt="Login illustration"
-            className="img-fluid"
-            style={{ maxHeight: "80vh", objectFit: "cover" }}
-          />
         </div>
       </div>
     </div>
