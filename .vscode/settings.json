@@ -1,0 +1,18 @@
+{
+    "python.testing.unittestArgs": [
+        "-v",
+        "-s",
+        "./trabajos",
+        "-p",
+        "test_*.py"
+    ],
+
+    "python.testing.pytestEnabled": true,
+    "python.testing.pytestArgs": [
+        "trabajos/Trabajos Prácticos Grupales/Trabajo Practico 6/back/test"
+    ],
+    "python.testing.pytestPath": "pytest",
+    "python.testing.unittestEnabled": false,
+    "python.testing.nosetestsEnabled": false,
+    "python.envFile": "${workspaceFolder}/.env"
+}
