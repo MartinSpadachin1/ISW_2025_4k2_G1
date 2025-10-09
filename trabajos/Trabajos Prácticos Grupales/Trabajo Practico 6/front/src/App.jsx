@@ -6,6 +6,7 @@ import CompraEntradas from './components/compraEntradas/ComprarEntradas';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LandingPage from './components/landingPage/landingPage';
 import Footer from './components/Footer/Footer';
+import QuienesSomos from './components/QuienesSomos/QuienesSomos';
 
 function App() {
   return (
@@ -17,7 +18,7 @@ function App() {
           <Route path='/' element={<LandingPage />} />
 
           {/* Ruta para saber quiénes somos nosotros (los integrantes del Grupo 1 - Comisión 4k2) */}
-          <Route path='/quienes-somos' element={<></>}/>
+          <Route path='/quienes-somos' element={<QuienesSomos/>}/>
 
           {/* Ruta para registrarse */}
           <Route path='/registrarse' element={<Registrar/>}></Route>
