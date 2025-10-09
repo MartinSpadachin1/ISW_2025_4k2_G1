@@ -9,7 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from src.common.pago import EFECTIVO, TARJETA
 from src.common.utils import validar_token
 
-app = FastAPI()
+app = FastAPI() # LA API SE LEVANTA CON ESTE COMANDO: uvicorn src.project.workflow.API.main:app --reload
 
 app.add_middleware(
     CORSMiddleware,
