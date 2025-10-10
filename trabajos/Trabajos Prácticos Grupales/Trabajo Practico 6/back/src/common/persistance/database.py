@@ -1,21 +1,20 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
-
-SQLITE_DATABASE_URL = "sqlite:///./ecoHarmonyDB.db"
-
-engine = create_engine(
-    SQLITE_DATABASE_URL, connect_args={"check_same_thread": False}
-)
+from sqlmodel import SQLModel, create_engine, Session
 
 
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
+sqlite_file_name = "ecoHarmonyDB.db"
+sqlite_url = f"sqlite:///{sqlite_file_name}"
 
-    finally:
-        db.close()
+
+engine = create_engine(sqlite_url, connect_args={"check_same_thread": False})
+SessionLocal = Session(bind=engine)
+
+def create_db_and_tables():
+    SQLModel.metadata.create_all(engine)
+
+def get_session():
+    with Session(engine) as session:
+        yield session
+
+
         
