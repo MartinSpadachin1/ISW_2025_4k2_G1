@@ -1,16 +1,31 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from src.project.workflow.API.endpoints.compra import router_compra
 from src.project.workflow.API.endpoints.monto import router_monto
 from src.project.workflow.API.login.login import router_auth
 from dotenv import load_dotenv
 import os
+from sqlmodel import Session
+from src.common.persistance.database import create_db_and_tables
+from src.project.entities import Reserva, Visitante
+from src.common.persistance.models import Reserva as ReservaModel, Visitante as VisitanteModel
+from contextlib import asynccontextmanager
+from src.project.workflow.API.register.register import router as router_register
 
-load_dotenv()  
+load_dotenv()
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM")
-app = FastAPI() # LA API SE LEVANTA CON ESTE COMANDO: uvicorn src.project.workflow.API.main:app --reload
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    print("Iniciando la aplicación...")
+    create_db_and_tables()
+    yield
+    print("Cerrando la aplicación...")
+
+
+app = FastAPI(lifespan=lifespan) # LA API SE LEVANTA CON ESTE COMANDO: uvicorn src.project.workflow.API.main:app --reload
 
 app.add_middleware(
     CORSMiddleware,
@@ -22,6 +37,7 @@ app.add_middleware(
 app.include_router(router_compra, prefix="/compra")
 app.include_router(router_monto, prefix="/monto")
 app.include_router(router_auth, prefix="/auth")
+app.include_router(router_register, prefix="/user")
 
 @app.get("/")
 def read_root():
