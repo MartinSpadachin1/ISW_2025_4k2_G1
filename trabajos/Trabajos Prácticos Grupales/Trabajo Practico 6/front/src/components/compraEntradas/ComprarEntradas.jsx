@@ -117,7 +117,7 @@ export default function CompraEntradas() {
                     name="metodoPago"
                     id="efectivo"
                     value="Efectivo"
-                    checked={metodoPago === "Efectivo"}
+                    checked={metodoPago === "efectivo"}
                     onChange={(e) => setMetodoPago(e.target.value)}
                   />
                   <label className="form-check-label" htmlFor="efectivo">
@@ -131,7 +131,7 @@ export default function CompraEntradas() {
                     name="metodoPago"
                     id="tarjeta"
                     value="Tarjeta"
-                    checked={metodoPago === "Tarjeta"}
+                    checked={metodoPago === "tarjeta"}
                     onChange={(e) => setMetodoPago(e.target.value)}
                   />
                   <label className="form-check-label" htmlFor="tarjeta">
