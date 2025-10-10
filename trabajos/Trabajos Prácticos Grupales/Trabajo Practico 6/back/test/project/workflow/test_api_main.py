@@ -5,7 +5,7 @@ from src.common.pago import EFECTIVO, TARJETA
 
 client = TestClient(app)
 
-
+#TODO: ARRGLAR ESTOS TESTS QUE FALLAN PORQUE EL ENDPOINT AHORA REQUIERE AUTH
 def test_monto():
     """Comprueba que el endpoint /monto/ calcula el total correctamente para varios visitantes."""
     # Setup
