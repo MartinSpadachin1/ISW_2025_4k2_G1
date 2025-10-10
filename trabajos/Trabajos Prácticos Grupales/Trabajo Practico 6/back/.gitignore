@@ -4,7 +4,7 @@
 
 # Python cache
 __pycache__/
-*.py[cod]
+*.pyc
 
 # pytest cache
 .pytest_cache/
