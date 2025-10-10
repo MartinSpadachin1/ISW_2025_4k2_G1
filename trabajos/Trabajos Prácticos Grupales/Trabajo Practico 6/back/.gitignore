@@ -1,1 +1,16 @@
+# Environment / local files
 .env
+.venv
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# pytest cache
+.pytest_cache/
+
+# VSCode
+.vscode/
+
+# Databases
+*.db

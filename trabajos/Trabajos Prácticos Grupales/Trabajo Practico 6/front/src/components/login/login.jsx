@@ -1,9 +1,15 @@
 // Login.jsx
-import React from "react";
+import React, { useState } from "react";
 import Claudia from '../../assets/claudia.png';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import api, { saveToken } from '../../services/api';
 
 export default function Login() {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   return (
     <div
       className="w-100 d-flex align-items-center justify-content-center p-3 p-md-4"
@@ -46,6 +52,8 @@ export default function Login() {
                   id="email"
                   className="form-control"
                   placeholder="Ingresá tu email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
 
@@ -56,8 +64,12 @@ export default function Login() {
                   id="password"
                   className="form-control"
                   placeholder="Ingresá tu contraseña"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
+
+              {error && <div className="alert alert-danger">{error}</div>}
 
               {/* Nuevo texto + enlace */}
               <div className="text-center mb-3 mt-auto">
@@ -72,8 +84,22 @@ export default function Login() {
               </div>
 
               <div className="d-flex justify-content-between">
-                <button className="btn btn-secondary">Cancelar</button>
-                <button className="btn btn-success">Ingresar</button>
+                <button className="btn btn-secondary" onClick={() => { setEmail(''); setPassword(''); setError(null); }}>Cancelar</button>
+                <button className="btn btn-success" onClick={async () => {
+                  setError(null);
+                  setLoading(true);
+                  try {
+                    const res = await api.login(email, password);
+                    if (res && res.access_token) {
+                      saveToken(res.access_token);
+                      navigate('/');
+                    } else {
+                      setError('Respuesta inválida del servidor');
+                    }
+                  } catch (err) {
+                    setError(err.detail || err.message || 'Error en login');
+                  } finally { setLoading(false); }
+                }} disabled={loading}>{loading ? 'Ingresando...' : 'Ingresar'}</button>
               </div>
             </div>
           </div>
