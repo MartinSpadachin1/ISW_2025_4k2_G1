@@ -26,26 +26,7 @@ export default function ModalComprarEntradas({
           err
         );
         // fallback a valores hardcodeados
-        const PRECIO_VIP = 10000;
-        const PRECIO_GENERAL = 6000;
-        setPrecios({
-          bebes: { rango: { desde: 0, hasta: 3 }, vip: 0, general: 0 },
-          niños: {
-            rango: { desde: 4, hasta: 15 },
-            vip: PRECIO_VIP * 0.5,
-            general: PRECIO_GENERAL * 0.5,
-          },
-          adultos: {
-            rango: { desde: 16, hasta: 65 },
-            vip: PRECIO_VIP,
-            general: PRECIO_GENERAL,
-          },
-          adulto_mayor: {
-            rango: { desde: 66, hasta: 120 },
-            vip: PRECIO_VIP * 0.5,
-            general: PRECIO_GENERAL * 0.5,
-          },
-        });
+        
       }
     };
 
@@ -182,6 +163,28 @@ export default function ModalComprarEntradas({
           <div className="modal-body">
             {precios ? (
               <>
+               {/* Tabla de referencia de precios por edad */}
+                  <h6 className="fw-bold mb-3">Tabla de Precios por Edad</h6>
+                  <table className="table table-sm table-bordered text-center align-middle mb-4">
+                    <thead className="table-light">
+                      <tr>
+                        <th>Categoría</th>
+                        <th>Rango de Edad</th>
+                        <th>Precio VIP</th>
+                        <th>Precio General</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {Object.entries(precios).map(([categoria, datos]) => (
+                        <tr key={categoria}>
+                          <td>{categoria.replace("_", " ")}</td>
+                          <td>{datos.rango.desde} - {datos.rango.hasta}</td>
+                          <td>${datos.vip.toFixed(2)}</td>
+                          <td>${datos.general.toFixed(2)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 {error && <div className="alert alert-danger">{error}</div>}
                 <table className="table table-bordered text-center align-middle">
                   <thead className="table-light">
