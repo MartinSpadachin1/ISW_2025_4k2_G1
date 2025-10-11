@@ -1,9 +1,16 @@
 // Registrar.jsx
-import React from "react";
+import React, { useState } from "react";
 import Elefanta from '../../assets/elefanta.png';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import api from '../../services/api';
 
 export default function Registrar() {
+  const navigate = useNavigate();
+  const [nombre, setNombre] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   return (
     <div
       className="w-100 d-flex align-items-center justify-content-center p-3 p-md-4"
@@ -47,6 +54,8 @@ export default function Registrar() {
                   id="nombre"
                   className="form-control"
                   placeholder="Ingresá tu nombre"
+                  value={nombre}
+                  onChange={(e) => setNombre(e.target.value)}
                 />
               </div>
 
@@ -58,6 +67,8 @@ export default function Registrar() {
                   id="email"
                   className="form-control"
                   placeholder="Ingresá tu email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
 
@@ -69,8 +80,12 @@ export default function Registrar() {
                   id="password"
                   className="form-control"
                   placeholder="Ingresá tu contraseña"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
+
+              {error && <div className="alert alert-danger">{error}</div>}
 
               {/* Texto + enlace a Iniciar Sesión */}
               <div className="text-center mb-3 mt-auto">
@@ -85,8 +100,17 @@ export default function Registrar() {
               </div>
 
               <div className="d-flex justify-content-between">
-                <button className="btn btn-secondary">Cancelar</button>
-                <button className="btn btn-success">Registrarse</button>
+                <button className="btn btn-secondary" onClick={() => { setNombre(''); setEmail(''); setPassword(''); setError(null); }}>Cancelar</button>
+                <button className="btn btn-success" onClick={async () => {
+                  setError(null);
+                  setLoading(true);
+                  try {
+                    await api.register(email, password, nombre);
+                    navigate('/iniciar-sesion');
+                  } catch (err) {
+                    setError(err.detail || err.message || 'Error al registrarse');
+                  } finally { setLoading(false); }
+                }} disabled={loading}>{loading ? 'Registrando...' : 'Registrarse'}</button>
               </div>
             </div>
           </div>

@@ -2,11 +2,11 @@
 import React, { useState } from "react";
 import Animalito from '../../assets/colibri.jpg'; 
 import ModalComprarEntradas from "./modalComprarEntradas";
+import api from '../../services/api';
 export default function CompraEntradas() {
   const [fecha, setFecha] = useState("");
   const [cantidad, setCantidad] = useState("");
   const [metodoPago, setMetodoPago] = useState("");
-  const [cardIzquierda, setCardIzquierda] = useState(false);
   const [mostrarModal, setMostrarModal] = useState(false);
 
   const fechaActual = new Date().toISOString().split("T")[0];
@@ -16,14 +16,14 @@ export default function CompraEntradas() {
       alert("Por favor completá todos los campos antes de confirmar.");
       return;
     }
-    setCardIzquierda(true);
+    // Abrir el modal de configuración para completar edades/tipos
+    setMostrarModal(true);
   };
 
   const handleCancelar = () => {
     setFecha("");
     setCantidad("");
     setMetodoPago("");
-    setCardIzquierda(false);
     setMostrarModal(false);
   };
 
@@ -32,12 +32,10 @@ export default function CompraEntradas() {
       alert("Debés ingresar una cantidad antes de configurar.");
       return;
     }
-    setCardIzquierda(true);
     setMostrarModal(true);
   };
   const cerrarModal = () => {
     setMostrarModal(false);
-    setCardIzquierda(false);
   };
 
   return (
@@ -67,14 +65,7 @@ export default function CompraEntradas() {
 
         {/* Formulario de compra */}
         <div className="col-12 col-md-8 d-flex">
-          <div
-            className="card shadow w-100 border-0 rounded-3"
-            style={{
-              backgroundColor: 'white',
-              marginLeft: cardIzquierda ? '5vw' : '0',
-              transition: 'margin-left 0.5s ease',
-            }}
-          >
+          <div className="card shadow w-100 border-0 rounded-3" style={{ backgroundColor: 'white' }}>
             <div className="card-body p-4 p-md-5 d-flex flex-column">
               <h3 className="card-title text-center mb-4">Comprar Entradas</h3>
 
@@ -126,7 +117,7 @@ export default function CompraEntradas() {
                     name="metodoPago"
                     id="efectivo"
                     value="Efectivo"
-                    checked={metodoPago === "Efectivo"}
+                    checked={metodoPago === "efectivo"}
                     onChange={(e) => setMetodoPago(e.target.value)}
                   />
                   <label className="form-check-label" htmlFor="efectivo">
@@ -140,7 +131,7 @@ export default function CompraEntradas() {
                     name="metodoPago"
                     id="tarjeta"
                     value="Tarjeta"
-                    checked={metodoPago === "Tarjeta"}
+                    checked={metodoPago === "tarjeta"}
                     onChange={(e) => setMetodoPago(e.target.value)}
                   />
                   <label className="form-check-label" htmlFor="tarjeta">
@@ -167,11 +158,13 @@ export default function CompraEntradas() {
         </div>
       </div>
             {mostrarModal && (
-        <ModalComprarEntradas
-          cantidad={cantidad}
-          onClose={cerrarModal}
-        />
-      )}
+                <ModalComprarEntradas
+                  cantidad={cantidad}
+                  fecha={fecha}
+                  metodoPago={metodoPago}
+                  onClose={cerrarModal}
+                />
+              )}
     </div>
   );
 }
