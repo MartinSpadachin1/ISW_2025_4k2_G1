@@ -9,6 +9,7 @@ export default function Registrar() {
   const [nombre, setNombre] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   return (
@@ -75,14 +76,35 @@ export default function Registrar() {
               {/* Campo Contraseña */}
               <div className="mb-3">
                 <label htmlFor="password" className="form-label">Contraseña</label>
-                <input
-                  type="password"
-                  id="password"
-                  className="form-control"
-                  placeholder="Ingresá tu contraseña"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
+                <div style={{ position: 'relative' }}>
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    id="password"
+                    className="form-control"
+                    placeholder="Ingresá tu contraseña"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    style={{ paddingRight: '70px' }}
+                  />
+                  <span
+                    onClick={() => setShowPassword(!showPassword)}
+                    style={{
+                      position: 'absolute',
+                      right: '15px',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      fontSize: '0.9rem',
+                      color: '#3da35d',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      userSelect: 'none',
+                      background: 'white',
+                      paddingLeft: '4px',
+                    }}
+                  >
+                    {showPassword ? 'Ocultar' : 'Mostrar'}
+                  </span>
+                </div>
               </div>
 
               {error && <div className="alert alert-danger">{error}</div>}
