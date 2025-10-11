@@ -12,6 +12,7 @@ from src.common.utils import validar_mail
 router = APIRouter()
 
 class UserRegister(BaseModel):
+    nombre: str = Field(min_length=1, max_length=50)
     email: str
     password: str = Field(min_length=8, max_length=72)
 
@@ -34,7 +35,7 @@ def register_user(user: UserRegister,
     hashed_pw = hash_password(user.password)
 
     # 3. Crear el usuario ORM
-    new_user = Usuario(email=user.email, hashed_password=hashed_pw)
+    new_user = Usuario(nombre=user.nombre, email=user.email, hashed_password=hashed_pw)
 
     # 4. Guardar en la base de datos
     session.add(new_user)

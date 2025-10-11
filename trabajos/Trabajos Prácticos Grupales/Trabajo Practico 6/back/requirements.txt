@@ -1,7 +1,9 @@
 fastapi
 uvicorn
 python-jose
-passlib[bcrypt]
+passlib[bcrypt]==1.7.4  # Versión de passlib recomendada para bcrypt
+bcrypt==4.3.0          
 python-dotenv
 aiohttp
 aiohttp_retry
+sqlmodel

@@ -108,7 +108,7 @@ def validar_compra(
         )
 
     # === PERSISTENCIA ===
-    db_reserva = ReservaModel(mail=email, fecha=fecha_obj)
+    db_reserva = ReservaModel(mail=email, fecha=fecha_obj, tipo_pago=forma_pago, pago_realizado=False)
     db_visitantes = []
 
     for visitante in visitantes:

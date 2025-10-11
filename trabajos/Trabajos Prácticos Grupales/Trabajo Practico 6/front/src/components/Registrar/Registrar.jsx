@@ -105,7 +105,7 @@ export default function Registrar() {
                   setError(null);
                   setLoading(true);
                   try {
-                    await api.register(email, password, nombre);
+                    await api.register(nombre, email, password);
                     navigate('/iniciar-sesion');
                   } catch (err) {
                     setError(err.detail || err.message || 'Error al registrarse');

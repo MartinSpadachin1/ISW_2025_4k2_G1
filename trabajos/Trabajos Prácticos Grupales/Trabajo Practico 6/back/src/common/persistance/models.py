@@ -24,12 +24,15 @@ class Reserva(SQLModel, table=True):
     mail: str
     fecha: str
     visitantes: list[Visitante] = Relationship(back_populates="reserva")
+    tipo_pago: str
+    pago_realizado: bool = Field(default=False)
 
 
 #Modelo Usuario
 class Usuario(SQLModel, table=True):
     __tablename__ = "usuarios"
     id: Optional[int] = Field(default=None, primary_key=True)
+    nombre: str = Field(min_length=1, max_length=50)
     email: str
     hashed_password: str
     is_active: bool = Field(default=True)

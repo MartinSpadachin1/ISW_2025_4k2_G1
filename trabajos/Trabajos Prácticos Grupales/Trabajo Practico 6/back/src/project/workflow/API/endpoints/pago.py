@@ -1,8 +1,12 @@
+# src/project/workflow/API/endpoints/pago.py
 from fastapi import APIRouter, HTTPException, Depends
 from sqlmodel import Session
 from src.project.workflow.API.login.security import verify_token
 from src.common.persistance.database import get_session
 from src.common.utils import validar_pago
+from src.project.entities.Reserva import Reserva
+from sqlmodel import select
+
 router_pago = APIRouter()
 
 
@@ -38,6 +42,20 @@ def procesar_pago(
         )
     
     #TODO: Poner en la reserva que el pago fue realizado (persistencia)
+    statement = select(Reserva).where(Reserva.id == data.get("id_reserva"), Reserva.mail == email)
+    reserva = session.exec(statement).first()
+
+    if not reserva:
+        raise HTTPException(
+            status_code=404,
+            detail="Reserva no encontrada"
+        )
+
+    reserva.pago_realizado = True
+    session.add(reserva)
+    session.commit()
+    session.refresh(reserva)
+
     return {
         "message": "Pago procesado exitosamente",
         "email": email,

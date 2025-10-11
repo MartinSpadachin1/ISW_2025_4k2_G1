@@ -22,11 +22,11 @@ export async function login(email, password) {
   return handleResponse(res);
 }
 
-export async function register(email, password) {
+export async function register(nombre, email, password) {
   const res = await fetch(`${BASE_URL}/user/register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password}),
+    body: JSON.stringify({ nombre, email, password }),
   });
   return handleResponse(res);
 }
