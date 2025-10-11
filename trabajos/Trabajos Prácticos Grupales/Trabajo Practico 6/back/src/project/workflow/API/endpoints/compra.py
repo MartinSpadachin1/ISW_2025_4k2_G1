@@ -41,52 +41,92 @@ Body JSON: { fecha, visitantes, forma_pago } — NO enviar token ni mail si el b
 
 """
 @router_compra.post("/validar_compra/")
-def validar_compra(data: dict, 
-                   user: str = Depends(verify_token),
-                   session: Session = Depends(get_session)) -> dict: 
+def validar_compra(
+    data: dict,
+    user: str = Depends(verify_token),
+    session: Session = Depends(get_session)
+) -> dict:
     print("Datos recibidos en /validar_compra/:", data)
-    visitantes = [Visitante(**item) for item in data.get("visitantes", [])]
-    fecha = data.get("fecha", "")
-    unique = UniqueCounter()
-    id = unique.next()
+
+    # === VALIDACIÓN TOKEN ===
+    if not user:
+        raise HTTPException(
+            status_code=401,
+            detail="Token inválido: usuario no presente en token"
+        )
     email = user  # email extraído del token
 
-    
-    if not user:
-        raise HTTPException(status_code=401, detail="Token inválido: usuario no presente en token")
-    
-    if validar_fecha(fecha) and 1 <= len(visitantes) <= 10 and data.get("forma_pago", "") in [EFECTIVO, TARJETA]:
-        try:
-            fecha_obj = datetime.strptime(fecha, "%Y-%m-%d").date()
-        except ValueError:
-            raise HTTPException(status_code=400, detail="Formato de fecha inválido. Use YYYY-MM-DD.")
+    # === VALIDACIÓN FECHA ===
+    fecha = data.get("fecha")
+    if not fecha:
+        raise HTTPException(
+            status_code=400,
+            detail="Campo 'fecha' es obligatorio"
+        )
 
-        #Creacion entidad Reserva
-        db_reserva = ReservaModel(mail=email, fecha=fecha_obj)
+    if not validar_fecha(fecha):
+        raise HTTPException(
+            status_code=400,
+            detail="La fecha no es válida según las reglas definidas"
+        )
 
-        db_visitantes = []
+    try:
+        fecha_obj = datetime.strptime(fecha, "%Y-%m-%d").date()
+    except ValueError:
+        raise HTTPException(
+            status_code=400,
+            detail="Formato de fecha inválido. Use YYYY-MM-DD."
+        )
 
-        for visitante in visitantes:
-            db_visitante = VisitanteModel(
-                edad=visitante.edad,
-                tipo_entrada=visitante.tipo_entrada,
-                monto_final=visitante.monto
-            )
-            db_visitantes.append(db_visitante)
+    # === VALIDACIÓN VISITANTES ===
+    visitantes_data = data.get("visitantes", [])
+    if not isinstance(visitantes_data, list) or len(visitantes_data) == 0:
+        raise HTTPException(
+            status_code=400,
+            detail="Debe incluir al menos un visitante"
+        )
+    if len(visitantes_data) > 10:
+        raise HTTPException(
+            status_code=400,
+            detail="No se pueden incluir más de 10 visitantes por compra"
+        )
 
-        # Asignar la lista de visitantes a la reserva
-        db_reserva.visitantes = db_visitantes
+    try:
+        visitantes = [Visitante(**item) for item in visitantes_data]
+    except TypeError as e:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Error al parsear visitantes: {str(e)}"
+        )
 
-        #Persistir en la base de datos
-        session.add(db_reserva)
-        session.commit()
-        session.refresh(db_reserva)
+    # === VALIDACIÓN FORMA DE PAGO ===
+    forma_pago = data.get("forma_pago")
+    if forma_pago not in [EFECTIVO, TARJETA]:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Forma de pago inválida: {forma_pago}. Debe ser '{EFECTIVO}' o '{TARJETA}'"
+        )
 
-         # El ID de la reserva recién creada
-        id = db_reserva.id
+    # === PERSISTENCIA ===
+    db_reserva = ReservaModel(mail=email, fecha=fecha_obj)
+    db_visitantes = []
 
-        return {"valido": True,
-                "id_compra": id}
-    else:
-        return {"valido": False,
-                "razon": "Fecha inválida o más de 10 visitantes."}
+    for visitante in visitantes:
+        db_visitante = VisitanteModel(
+            edad=visitante.edad,
+            tipo_entrada=visitante.tipo_entrada,
+            monto_final=visitante.monto
+        )
+        db_visitantes.append(db_visitante)
+
+    db_reserva.visitantes = db_visitantes
+
+    session.add(db_reserva)
+    session.commit()
+    session.refresh(db_reserva)
+
+    return {
+        "valido": True,
+        "id_compra": db_reserva.id
+    }
+

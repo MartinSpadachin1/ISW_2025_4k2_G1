@@ -116,7 +116,7 @@ export default function CompraEntradas() {
                     type="radio"
                     name="metodoPago"
                     id="efectivo"
-                    value="Efectivo"
+                    value="efectivo"
                     checked={metodoPago === "efectivo"}
                     onChange={(e) => setMetodoPago(e.target.value)}
                   />
@@ -130,7 +130,7 @@ export default function CompraEntradas() {
                     type="radio"
                     name="metodoPago"
                     id="tarjeta"
-                    value="Tarjeta"
+                    value="tarjeta"
                     checked={metodoPago === "tarjeta"}
                     onChange={(e) => setMetodoPago(e.target.value)}
                   />
