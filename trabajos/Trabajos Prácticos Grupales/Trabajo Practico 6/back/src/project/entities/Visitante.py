@@ -32,3 +32,6 @@ class Visitante:
         if not (0 <= self.edad <= 120):
             return False
         return True
+    
+    def __str__(self):
+        return f"Visitante(edad={self.edad}, tipo_entrada='{self.tipo_entrada}', monto={self.monto})"

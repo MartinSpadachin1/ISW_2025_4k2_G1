@@ -6,6 +6,8 @@ from src.common.persistance.database import get_session
 from src.common.utils import validar_pago
 from src.project.entities.Reserva import Reserva
 from sqlmodel import select
+from src.common.email_utils import send_ticket_email
+from src.common.persistance.models import Reserva as ReservaModel
 
 router_pago = APIRouter()
 
@@ -56,8 +58,12 @@ def procesar_pago(
     session.commit()
     session.refresh(reserva)
 
+    # Enviar email con tickets adjuntos
+    send_ticket_email(recipient_email=email, reserva=reserva)
+
     return {
-        "message": "Pago procesado exitosamente",
+        "message": "Pago procesado exitosamente y entradas enviadas por email",
         "email": email,
-        "data": data
+        "data": data,
+        "reserva_id": reserva.id
     }

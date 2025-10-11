@@ -3,7 +3,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
 from os import getenv
-from src.project.entities.Reserva import Reserva
+from src.common.persistance.models import Reserva
 
 
 # --- Carga de Configuración de Entorno ---
@@ -49,10 +49,16 @@ def send_ticket_email(recipient_email: str, reserva: "Reserva"):
     # En un caso real, aquí generarías un PDF con los códigos QR o detalles.
     '''# FALTA IMPLEMENTAR ESTA PARTE
     
+
     
     '''
-    ticket_content = f"Entrada para Reserva ID {reserva.id} - Asientos: {getattr(reserva, 'asientos', 'General')} - Mail: {recipient_email}"
-    
+
+    visitantes_info = "\n".join(
+        [f" - Visitante {i+1}: Edad {v.edad}, Tipo Entrada {v.tipo_entrada}, Monto {v.monto_final:.2f}" for i, v in enumerate(reserva.visitantes)]
+    )
+
+    ticket_content = f"Entrada para Reserva ID {reserva.id}\n\nDetalles de los Visitantes:\n{visitantes_info}"
+
     ticket_part = MIMEApplication(ticket_content.encode('utf-8'), _subtype="txt")
     ticket_part.add_header('Content-Disposition', 'attachment', filename=f"Entradas_Reserva_{reserva.id}.txt")
     msg.attach(ticket_part)

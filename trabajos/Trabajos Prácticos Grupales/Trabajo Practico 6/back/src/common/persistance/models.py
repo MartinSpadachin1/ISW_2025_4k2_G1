@@ -27,6 +27,9 @@ class Reserva(SQLModel, table=True):
     tipo_pago: str
     pago_realizado: bool = Field(default=False)
 
+    def total_monto(self) -> float:
+        return sum(visitante.monto_final for visitante in self.visitantes)
+
 
 #Modelo Usuario
 class Usuario(SQLModel, table=True):

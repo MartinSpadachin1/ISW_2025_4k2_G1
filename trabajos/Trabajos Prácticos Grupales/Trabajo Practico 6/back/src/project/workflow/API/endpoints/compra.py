@@ -1,6 +1,6 @@
 # src/project/workflow/API/endpoints/compra.py
 from fastapi import APIRouter, HTTPException, Depends
-from sqlmodel import Session
+from sqlmodel import Session, select
 from src.project.entities.Visitante import Visitante
 from src.common.utils import validar_fecha
 from src.common.counter import UniqueCounter
@@ -11,6 +11,8 @@ from src.project.workflow.API.login.security import verify_token
 from src.common.persistance.models import Reserva as ReservaModel, Visitante as VisitanteModel
 from src.common.persistance.database import get_session
 from datetime import datetime
+
+from src.common.email_utils import send_ticket_email
 
 
 router_compra = APIRouter()
@@ -124,6 +126,14 @@ def validar_compra(
     session.add(db_reserva)
     session.commit()
     session.refresh(db_reserva)
+
+    ### TODA ESTA PARTE ES PARA PROBAR EL ENVIO DE EMAILS
+    statement = select(ReservaModel).where(ReservaModel.id == db_reserva.id)
+
+    reserva = session.exec(statement).first()
+
+    # Enviar email con tickets adjuntos
+    send_ticket_email(recipient_email=email, reserva=reserva)
 
     return {
         "valido": True,

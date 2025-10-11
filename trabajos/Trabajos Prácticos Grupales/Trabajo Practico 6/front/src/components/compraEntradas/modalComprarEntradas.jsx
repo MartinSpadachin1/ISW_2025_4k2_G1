@@ -85,7 +85,7 @@ export default function ModalComprarEntradas({
     try {
       const visitantes = entradas.map((e) => ({
         edad: Number(e.edad),
-        tipo_entrada: e.tipo === "vip" ? "vip" : "general",
+        tipo_entrada: e.tipo === "vip" ? "vip" : "regular",
       }));
       const res = await api.montoTotal(visitantes);
       setLoading(false);
