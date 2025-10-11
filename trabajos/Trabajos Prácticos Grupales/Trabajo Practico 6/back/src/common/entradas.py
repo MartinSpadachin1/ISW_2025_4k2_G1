@@ -1,6 +1,6 @@
 
 VIP = "vip"
-GENERAL = "general"
+REGULAR = "regular"
 
-PRECIO_GENERAL = 5000
+PRECIO_REGULAR = 5000
 PRECIO_VIP = 10000

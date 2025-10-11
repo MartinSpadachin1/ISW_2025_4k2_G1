@@ -1,11 +1,11 @@
 from src.project.entities.Visitante import Visitante
-from src.common.entradas import VIP, GENERAL, PRECIO_VIP, PRECIO_GENERAL
+from src.common.entradas import VIP, REGULAR, PRECIO_VIP, PRECIO_REGULAR
 
 
 def test_visitante_bebe_gratis():
     """Comprueba que un bebé de 2 años paga 0."""
     # Setup
-    v = Visitante(2, GENERAL)
+    v = Visitante(2, REGULAR)
     # Execution
     monto = v.monto
     # Assertion
@@ -24,14 +24,14 @@ def test_visitante_nino_vip_descuento():
 
 
 def test_visitante_adulto_general():
-    """Verifica que un adulto pague el precio general sin descuento."""
+    """Verifica que un adulto pague el precio regular sin descuento."""
     # Setup
-    v = Visitante(30, GENERAL)
-    expected = PRECIO_GENERAL
+    v = Visitante(30, REGULAR)
+    expected = PRECIO_REGULAR
     # Execution
     monto = v.monto
     # Assertion
-    assert monto == expected, f"Adulto general debe pagar {expected}, obtuvo {monto}"
+    assert monto == expected, f"Adulto regular debe pagar {expected}, obtuvo {monto}"
 
 
 def test_visitante_adulto_mayor_vip():
@@ -48,10 +48,10 @@ def test_visitante_adulto_mayor_vip():
 def test_visitante_atributos():
     """Comprueba atributos `edad` y `tipo_entrada` de la instancia."""
     # Setup
-    v = Visitante(25, GENERAL)
+    v = Visitante(25, REGULAR)
     # Execution / Assertion
     assert v.edad == 25, f"Edad esperada 25, obtuvo {v.edad}"
-    assert v.tipo_entrada == GENERAL, f"Tipo de entrada esperado {GENERAL}, obtuvo {v.tipo_entrada}"
+    assert v.tipo_entrada == REGULAR, f"Tipo de entrada esperado {REGULAR}, obtuvo {v.tipo_entrada}"
 
 def test_visitante_edad_invalida_negativa():
     """Lanza ValueError si la edad es negativa."""
@@ -64,7 +64,7 @@ def test_visitante_edad_invalida_alta():
     """Lanza ValueError si la edad es mayor al límite aceptado."""
     # Execution / Assertion
     with __import__('pytest').raises(ValueError) as exc:
-        Visitante(130, GENERAL)
+        Visitante(130, REGULAR)
     assert "La edad debe estar entre 0 y 120 años." in str(exc.value), f"Mensaje de error inesperado: {exc.value}"
         
 def test_visitante_edad_invalida_none():

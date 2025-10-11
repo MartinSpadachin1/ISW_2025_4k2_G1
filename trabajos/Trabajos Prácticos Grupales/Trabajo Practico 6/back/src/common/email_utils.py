@@ -51,7 +51,7 @@ def send_ticket_email(recipient_email: str, reserva: "Reserva"):
     
     
     '''
-    ticket_content = f"Entrada para Reserva ID {reserva.id} - Asientos: {getattr(reserva, 'asientos', 'General')} - Mail: {recipient_email}"
+    ticket_content = f"Entrada para Reserva ID {reserva.id} - Asientos: {getattr(reserva, 'asientos', 'Regular')} - Mail: {recipient_email}"
     
     ticket_part = MIMEApplication(ticket_content.encode('utf-8'), _subtype="txt")
     ticket_part.add_header('Content-Disposition', 'attachment', filename=f"Entradas_Reserva_{reserva.id}.txt")

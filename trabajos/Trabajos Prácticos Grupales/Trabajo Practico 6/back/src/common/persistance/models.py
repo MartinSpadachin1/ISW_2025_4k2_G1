@@ -1,6 +1,6 @@
 from typing import Optional
 from sqlmodel import Field, Relationship, SQLModel, Session
-from src.common.entradas import VIP, GENERAL, PRECIO_GENERAL, PRECIO_VIP
+from src.common.entradas import VIP, REGULAR, PRECIO_REGULAR, PRECIO_VIP
 
 
 
