@@ -1,4 +1,5 @@
-import datetime
+import re
+from datetime import datetime, date, timedelta # Importa la clase datetime y date
 from typing import Union
 import re
 
@@ -33,15 +34,15 @@ def validar_fecha(fecha: Union[str, datetime.date]) -> bool:
     # Normalizar a datetime.date
     if isinstance(fecha, str):
         try:
-            fecha_obj = datetime.date.fromisoformat(fecha)
+            fecha_obj = date.fromisoformat(fecha)
         except Exception:
             raise ValueError("Fecha con formato inválido. Use YYYY-MM-DD o un objeto datetime.date")
-    elif isinstance(fecha, datetime.date):
+    elif isinstance(fecha, date):
         fecha_obj = fecha
     else:
         raise TypeError("El parámetro fecha debe ser str (YYYY-MM-DD) o datetime.date")
 
-    hoy = datetime.date.today()
+    hoy = date.today()
     if fecha_obj < hoy:
         return False
 
@@ -59,3 +60,24 @@ def validar_fecha(fecha: Union[str, datetime.date]) -> bool:
 def validar_token(token: str) -> bool:
     return True # Placeholder para validación de token, siempre devuelve True
 
+
+
+def validar_pago(numero, cvv, fecha_expiracion) -> bool:
+    # Validar número de tarjeta (debe tener 16 dígitos)
+    if not re.fullmatch(r'\d{16}', numero):
+        return False
+
+    # Validar CVV (debe tener 3 o 4 dígitos)
+    if not re.fullmatch(r'\d{3,4}', cvv):
+        return False
+
+    # Validar fecha de expiración (debe ser una fecha futura)
+    try:
+        fecha_expiracion_obj = datetime.strptime(fecha_expiracion, "%Y-%m-%d").date()
+    except ValueError:
+        return False
+
+    if fecha_expiracion_obj <= datetime.today().date():
+        return False
+
+    return True

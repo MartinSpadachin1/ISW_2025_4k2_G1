@@ -1,0 +1,45 @@
+from fastapi import APIRouter, HTTPException, Depends
+from sqlmodel import Session
+from src.project.workflow.API.login.security import verify_token
+from src.common.persistance.database import get_session
+from src.common.utils import validar_pago
+router_pago = APIRouter()
+
+
+"""
+json:
+{
+    "id_reserva": 1,
+    "numero_tarjeta": "1234567812345678",
+    "cvv": "123",
+    "fecha_expiracion": "2025-12-31"
+}"""
+
+@router_pago.post("/procesar_pago/")
+def procesar_pago(
+    data: dict,
+    user: str = Depends(verify_token),
+    session: Session = Depends(get_session)
+) -> dict:
+    print("Datos recibidos en /procesar_pago/:", data)
+
+    # === VALIDACIÓN TOKEN ===
+    if not user:
+        raise HTTPException(
+            status_code=401,
+            detail="Token inválido: usuario no presente en token"
+        )
+    email = user  # email extraído del token
+
+    if not validar_pago(data.get("numero_tarjeta"), cvv=data.get("cvv"), fecha_expiracion=data.get("fecha_expiracion")):
+        raise HTTPException(
+            status_code=400,
+            detail="Datos de pago inválidos"
+        )
+    
+    #TODO: Poner en la reserva que el pago fue realizado (persistencia)
+    return {
+        "message": "Pago procesado exitosamente",
+        "email": email,
+        "data": data
+    }
