@@ -1,15 +1,20 @@
 // CompraEntradas.jsx
 import React, { useState } from "react";
-import Animalito from '../../assets/colibri.jpg'; 
+import Animalito from "../../assets/colibri.jpg";
 import ModalComprarEntradas from "./modalComprarEntradas";
-import api from '../../services/api';
+import api from "../../services/api";
 export default function CompraEntradas() {
   const [fecha, setFecha] = useState("");
   const [cantidad, setCantidad] = useState("");
   const [metodoPago, setMetodoPago] = useState("");
   const [mostrarModal, setMostrarModal] = useState(false);
+  const [entradasCargadas, setEntradasCargadas] = useState([]);
 
   const fechaActual = new Date().toISOString().split("T")[0];
+
+  const handleEntradasChange = (nuevasEntradas) => {
+    setEntradasCargadas(nuevasEntradas);
+  };
 
   const handleConfirmar = () => {
     if (!fecha || !cantidad || !metodoPago) {
@@ -34,21 +39,25 @@ export default function CompraEntradas() {
     }
     setMostrarModal(true);
   };
-  const cerrarModal = () => {
+  const cerrarModal = (datos) => {
     setMostrarModal(false);
+    if (datos) {
+      setEntradasCargadas(datos); // guardamos lo que cargó el usuario
+      console.log("Entradas cargadas:", datos);
+    }
   };
 
   return (
     <div
       className="w-100 d-flex align-items-center justify-content-center p-3 p-md-4"
       style={{
-        minHeight: '100vh',
-        paddingTop: '80px',    // compensa navbar
-        paddingBottom: '80px', // compensa footer
-        boxSizing: 'border-box',
+        minHeight: "100vh",
+        paddingTop: "80px", // compensa navbar
+        paddingBottom: "80px", // compensa footer
+        boxSizing: "border-box",
       }}
     >
-      <div className="row w-100 g-0" style={{ maxWidth: '1200px' }}>
+      <div className="row w-100 g-0" style={{ maxWidth: "1200px" }}>
         {/* Imagen del animalito: solo en desktop */}
         <div className="col-12 col-md-4 d-none d-md-flex">
           <img
@@ -56,16 +65,19 @@ export default function CompraEntradas() {
             alt="Animal del parque"
             className="w-100 h-100"
             style={{
-              objectFit: 'cover',
-              maxHeight: '80vh',
-              borderRadius: '12px 0 0 12px',
+              objectFit: "cover",
+              maxHeight: "80vh",
+              borderRadius: "12px 0 0 12px",
             }}
           />
         </div>
 
         {/* Formulario de compra */}
         <div className="col-12 col-md-8 d-flex">
-          <div className="card shadow w-100 border-0 rounded-3" style={{ backgroundColor: 'white' }}>
+          <div
+            className="card shadow w-100 border-0 rounded-3"
+            style={{ backgroundColor: "white" }}
+          >
             <div className="card-body p-4 p-md-5 d-flex flex-column">
               <h3 className="card-title text-center mb-4">Comprar Entradas</h3>
 
@@ -84,7 +96,9 @@ export default function CompraEntradas() {
               {/* Cantidad + Configurar */}
               <div className="d-flex align-items-end justify-content-between mb-3">
                 <div style={{ flex: 1 }}>
-                  <label className="form-label mb-1">Cantidad de entradas</label>
+                  <label className="form-label mb-1">
+                    Cantidad de entradas
+                  </label>
                   <input
                     type="number"
                     className="form-control"
@@ -147,7 +161,7 @@ export default function CompraEntradas() {
                 </button>
                 <button
                   className="btn btn-success"
-                  style={{ backgroundColor: '#3da35d', borderColor: '#3da35d' }}
+                  style={{ backgroundColor: "#3da35d", borderColor: "#3da35d" }}
                   onClick={handleConfirmar}
                 >
                   Confirmar
@@ -157,14 +171,16 @@ export default function CompraEntradas() {
           </div>
         </div>
       </div>
-            {mostrarModal && (
-                <ModalComprarEntradas
-                  cantidad={cantidad}
-                  fecha={fecha}
-                  metodoPago={metodoPago}
-                  onClose={cerrarModal}
-                />
-              )}
+      {mostrarModal && (
+        <ModalComprarEntradas
+          cantidad={cantidad}
+          fecha={fecha}
+          metodoPago={metodoPago}
+          onClose={cerrarModal}
+          entradasIniciales={entradasCargadas} // le pasamos los datos previos
+          onChange={handleEntradasChange} // callback para cada cambio
+        />
+      )}
     </div>
   );
 }
