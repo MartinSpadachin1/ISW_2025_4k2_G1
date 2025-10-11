@@ -2,7 +2,7 @@ import pytest
 
 from src.common.entradas import VIP, GENERAL
 from src.project.entities.Visitante import Visitante
-from src.project.workflow.compra import calcular_monto
+from src.project.workflow.compra_calculo import calcular_monto
 
 @pytest.mark.parametrize("visitantes, expected_monto", [
     ([Visitante(20, VIP), Visitante(25, VIP)], 20000),

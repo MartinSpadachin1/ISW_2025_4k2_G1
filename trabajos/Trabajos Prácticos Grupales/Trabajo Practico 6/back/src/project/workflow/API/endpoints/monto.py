@@ -2,13 +2,13 @@ from fastapi import APIRouter, HTTPException
 from typing import Dict, Any
 from src.common.entradas import PRECIO_GENERAL, PRECIO_VIP
 from src.project.entities.Visitante import Visitante
-from src.project.workflow.compra import calcular_monto
+from src.project.workflow.compra_calculo import calcular_monto
 
 router_monto = APIRouter()
 
 
 @router_monto.post("/monto_total/")
-def realizar_compra(data: dict) -> float:
+def obtener_monto_total(data: dict) -> float:
     visitantes = [Visitante(**item) for item in data.get("visitantes", [])]
     return calcular_monto(visitantes)
 

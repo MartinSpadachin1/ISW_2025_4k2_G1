@@ -3,8 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from src.project.workflow.API.endpoints.compra import router_compra
 from src.project.workflow.API.endpoints.monto import router_monto
 from src.project.workflow.API.login.login import router_auth
-from dotenv import load_dotenv
-import os
+
+
 from sqlmodel import Session
 from src.common.persistance.database import create_db_and_tables
 from src.project.entities import Reserva, Visitante
@@ -12,10 +12,6 @@ from src.common.persistance.models import Reserva as ReservaModel, Visitante as 
 from contextlib import asynccontextmanager
 from src.project.workflow.API.register.register import router as router_register
 
-load_dotenv()
-
-SECRET_KEY = os.getenv("SECRET_KEY")
-ALGORITHM = os.getenv("ALGORITHM")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

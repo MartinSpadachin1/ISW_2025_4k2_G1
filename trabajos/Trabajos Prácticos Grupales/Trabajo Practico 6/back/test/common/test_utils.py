@@ -1,8 +1,7 @@
 import datetime
 import pytest
-
 from src.common.utils import validar_fecha
-
+from src.common.utils import validar_mail
 
 def test_validar_fecha_anterior():
     # Setup
@@ -71,3 +70,43 @@ def test_validar_fecha_excepciones_raise():
         validar_fecha(12345)
 
 
+
+
+# Asume que esta importación funciona:
+# from tu_modulo_de_utilidades import validar_mail 
+
+# Casos de prueba: (email, resultado_esperado)
+test_cases = [
+    # --- Casos Válidos (True) ---
+    ("usuario@dominio.com", True),
+    ("user.name123@sub.domain-test.net", True),
+    ("a@b.co", True), 
+    ("first-last@longdomain.technology", True), 
+    ("with+plus@example.com", True), 
+    ("underscore_@server.info", True),
+    
+    # --- Casos Inválidos (False) ---
+
+    ("solo.dominio.com", False), 
+    ("usuario@dominio", False), 
+    ("@dominio.com", False),
+    ("usuario@.com", False), 
+    ("user,name@domain.com", False),
+    ("user@domain:80.com", False), 
+    ("user@domain!", False), 
+    ("usuario@dominio.c", False), 
+    (" user@domain.com", False), 
+    ("user@domain.com ", False), 
+]
+
+@pytest.mark.parametrize("email, expected_result", test_cases)
+def test_validar_mail_parametrized(email, expected_result):
+    """
+    Prueba la función validar_mail con una variedad de formatos válidos e inválidos.
+    """
+    # Execution
+    actual_result = validar_mail(email)
+    
+    # Assertion
+    assert actual_result == expected_result, \
+        f"Fallo para el email '{email}'. Resultado esperado: {expected_result}, Resultado obtenido: {actual_result}"

@@ -2,12 +2,10 @@ from fastapi import Depends, HTTPException
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import jwt
 from passlib.context import CryptContext
-
+from src.project.workflow.API.config import SECRET_KEY, ALGORITHM
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-SECRET_KEY = "clave_muy_secreta"
-ALGORITHM = "HS256"
 security = HTTPBearer()
 
 
@@ -26,7 +24,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     # para evitar el ValueError: password cannot be longer than 72 bytes.
     truncated_password = plain_password.encode('utf-8')[:72]
     
-    # 💡 pwd_context.verify() es el método clave que maneja la lógica de comparación
+    # pwd_context.verify() es el método clave que maneja la lógica de comparación
     return pwd_context.verify(truncated_password, hashed_password)
 
 def hash_password(password: str) -> str:
@@ -34,10 +32,10 @@ def hash_password(password: str) -> str:
     Genera el hash de una contraseña, TRUNCANDO la entrada a 72 bytes,
     ya que bcrypt tiene esta limitación.
     """
-    # 💡 La línea clave: Truncar la contraseña codificada a 72 bytes.
+    # La línea clave: Truncar la contraseña codificada a 72 bytes.
     truncated_password = password.encode('utf-8')[:72]
     
-    # 💡 Llama a .hash() con la contraseña TRUNCADA
+    # Llama a .hash() con la contraseña TRUNCADA
     return pwd_context.hash(truncated_password)
 
 

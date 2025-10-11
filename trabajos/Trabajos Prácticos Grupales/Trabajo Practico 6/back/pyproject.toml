@@ -3,3 +3,6 @@
 pythonpath = ["."]
 # The default location for tests
 testpaths = ["test"]
+filterwarnings = [
+    "ignore:The default date adapter is deprecated:DeprecationWarning"
+]

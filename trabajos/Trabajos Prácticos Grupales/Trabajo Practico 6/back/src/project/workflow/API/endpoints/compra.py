@@ -4,10 +4,7 @@ from sqlmodel import Session
 from src.project.entities.Visitante import Visitante
 from src.common.utils import validar_fecha
 from src.common.counter import UniqueCounter
-from fastapi.middleware.cors import CORSMiddleware
 from src.common.pago import EFECTIVO, TARJETA
-from src.common.utils import validar_token
-from src.project.entities.Reserva import Reserva
 from src.project.workflow.API.login.security import verify_token
 
 #Imports del ORM
@@ -59,8 +56,6 @@ def validar_compra(data: dict,
         raise HTTPException(status_code=401, detail="Token inválido: usuario no presente en token")
     
     if validar_fecha(fecha) and 1 <= len(visitantes) <= 10 and data.get("forma_pago", "") in [EFECTIVO, TARJETA]:
-        reserva = Reserva(email, visitantes, fecha)
-        # TODO: Persistir la reserva en la base de datos
         try:
             fecha_obj = datetime.strptime(fecha, "%Y-%m-%d").date()
         except ValueError:

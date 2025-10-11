@@ -4,9 +4,9 @@ from pydantic import BaseModel
 from jose import jwt
 from passlib.context import CryptContext
 from datetime import datetime, timedelta, timezone
-from sqlmodel import Session, select # 💡 Necesario para la DB
+from sqlmodel import Session, select 
 
-from src.project.workflow.API.login.security import SECRET_KEY, ALGORITHM
+from src.project.workflow.API.config import SECRET_KEY, ALGORITHM
 from src.project.workflow.API.login.security import verify_password
 from src.common.persistance.models import Usuario
 from src.common.persistance.database import get_session
@@ -17,20 +17,7 @@ router_auth = APIRouter(tags=["Auth"])
 
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
-def get_fake_user_db():
-    """Return a small in-memory user db with hashed password (created at runtime).
 
-    Creating the hash at runtime avoids doing expensive/possibly failing crypto work during module import,
-    which can break application startup (uvicorn imports modules on start).
-    """
-    password = "123"
-    hashed = pwd_context.hash(password)
-    return {
-        "test@example.com": {
-            "email": "test@example.com",
-            "hashed_password": hashed
-        }
-    }
 
 class LoginRequest(BaseModel):
     email: str

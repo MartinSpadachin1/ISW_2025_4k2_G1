@@ -1,6 +1,24 @@
 import datetime
 from typing import Union
+import re
 
+def validar_mail(mail: str) -> bool:
+    """
+    Realiza una validación de email más robusta usando una expresión regular.
+
+    Args:
+        mail (str): La cadena de email a validar.
+
+    Returns:
+        bool: True si el email tiene un formato válido, False en caso contrario.
+    """
+    # Expresión regular estándar para la mayoría de los formatos de email válidos.
+    # Cubre caracteres alfanuméricos, puntos, guiones y el formato local@dominio.tld
+    regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    
+    # re.fullmatch() intenta hacer coincidir el patrón con toda la cadena.
+    # Si encuentra una coincidencia, devuelve un objeto match (True); de lo contrario, devuelve None (False).
+    return bool(re.fullmatch(regex, mail))
 
 def validar_fecha(fecha: Union[str, datetime.date]) -> bool:
     """
@@ -40,3 +58,4 @@ def validar_fecha(fecha: Union[str, datetime.date]) -> bool:
 
 def validar_token(token: str) -> bool:
     return True # Placeholder para validación de token, siempre devuelve True
+
