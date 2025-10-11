@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from src.project.workflow.API.endpoints.compra import router_compra
 from src.project.workflow.API.endpoints.monto import router_monto
 from src.project.workflow.API.login.login import router_auth
-
+from src.project.workflow.API.endpoints.pago import router_pago
 
 from sqlmodel import Session
 from src.common.persistance.database import create_db_and_tables
@@ -34,6 +34,7 @@ app.include_router(router_compra, prefix="/compra")
 app.include_router(router_monto, prefix="/monto")
 app.include_router(router_auth, prefix="/auth")
 app.include_router(router_register, prefix="/user")
+app.include_router(router_pago, prefix="/pago")
 
 @app.get("/")
 def read_root():
