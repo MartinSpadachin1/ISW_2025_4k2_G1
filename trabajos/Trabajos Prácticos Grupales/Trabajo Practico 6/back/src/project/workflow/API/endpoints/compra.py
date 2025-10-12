@@ -138,8 +138,9 @@ def validar_compra(
 
     reserva = session.exec(statement).first()
 
-    # Enviar email con tickets adjuntos
-    send_ticket_email(recipient_email=email, reserva=reserva)
+    # Enviar email con tickets adjuntos sólo si la forma de pago es EFECTIVO
+    if forma_pago == EFECTIVO:
+        send_ticket_email(recipient_email=email, reserva=reserva)
 
     return {
         "valido": True,

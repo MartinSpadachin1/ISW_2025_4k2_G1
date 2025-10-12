@@ -28,6 +28,13 @@ def send_ticket_email(recipient_email: str, reserva: "Reserva"):
     msg['To'] = recipient_email
     msg['Subject'] = f"¡Tus entradas de Eco Harmony Park para la Reserva ID {reserva.id}!"
 
+    if reserva.tipo_pago == "efectivo":
+        pago_info = "Forma de Pago: Efectivo"
+        pago_monto = f"Total a Pagar: ${reserva.total_monto():.2f} (abonar al ingresar al parque)"
+    else:
+        pago_info = "Forma de Pago: Tarjeta"
+        pago_monto = f"Total Pagado: ${reserva.total_monto():.2f}"
+
     # 1. Cuerpo del Correo
     body = f"""
     Estimado/a cliente,
@@ -38,8 +45,8 @@ def send_ticket_email(recipient_email: str, reserva: "Reserva"):
     - ID: {reserva.id}
     - Fecha: {reserva.fecha}
     - Cantidad de Entradas: {len(reserva.visitantes)}
-    - Tipo de Pago: {reserva.tipo_pago}
-    - Total Pagado: {reserva.total_monto():.2f}
+    - {pago_info}
+    - {pago_monto}
 
     ¡Disfruta tu visita!
     """
