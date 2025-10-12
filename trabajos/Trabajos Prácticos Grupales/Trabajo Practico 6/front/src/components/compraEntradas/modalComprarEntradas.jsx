@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useToast } from '../common/ToastContext';
 import api from "../../services/api";
 
 export default function ModalComprarEntradas({
@@ -14,6 +15,8 @@ export default function ModalComprarEntradas({
   const [mostrar, setMostrar] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const toast = useToast();
 
   useEffect(() => {
     const init = async () => {
@@ -114,23 +117,34 @@ export default function ModalComprarEntradas({
         tipo_entrada: e.tipo === "vip" ? "vip" : "regular",
       }));
 
+      let fecha_payload = null;
+      if (fecha) {
+        if (fecha instanceof Date) {
+          fecha_payload = fecha.toISOString().split('T')[0];
+        } else {
+          fecha_payload = fecha; // asume que ya es string en formato correcto
+        }
+      }
+
       const payload = {
         token: localStorage.getItem("access_token") || null,
-        fecha: fecha || null,
+        fecha: fecha_payload,
         visitantes,
         forma_pago: metodoPago || null,
       };
 
-      setLoading(true);
-      const resVal = await api.validarCompra(payload);
-      setLoading(false);
+  setLoading(true);
+  const resVal = await api.validarCompra(payload);
+  setLoading(false);
 
-      alert(resVal?.message || "Compra validada correctamente");
+  // Si la reserva fue creada, devolvemos el id al padre para que decida si abrir pasarela
+  const id_compra = resVal?.id_compra || null;
 
-      // ✅ devolvemos las entradas al padre
-      onClose && onClose(entradas);
+  toast.show(resVal?.message || 'Compra validada correctamente');
 
-      setMostrar(false);
+  onClose && onClose({ entradas, id_compra });
+
+  setMostrar(false);
     } catch (err) {
       setLoading(false);
       setError(err.detail || err.message || "Error validando compra");

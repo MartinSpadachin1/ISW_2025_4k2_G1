@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Elefanta from '../../assets/elefanta.png';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../../services/api';
+import { useToast } from '../common/ToastContext';
 
 export default function Registrar() {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ export default function Registrar() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const toast = useToast();
   return (
     <div
       className="w-100 d-flex align-items-center justify-content-center p-3 p-md-4"
@@ -128,6 +130,7 @@ export default function Registrar() {
                   setLoading(true);
                   try {
                     await api.register(nombre, email, password);
+                    toast.show('Registro exitoso. Ya podés iniciar sesión.');
                     navigate('/iniciar-sesion');
                   } catch (err) {
                     setError(err.detail || err.message || 'Error al registrarse');

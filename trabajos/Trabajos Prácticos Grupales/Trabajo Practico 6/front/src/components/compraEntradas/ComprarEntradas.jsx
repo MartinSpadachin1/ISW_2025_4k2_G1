@@ -1,16 +1,28 @@
 // CompraEntradas.jsx
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import Animalito from "../../assets/colibri.jpg";
 import ModalComprarEntradas from "./modalComprarEntradas";
+import ModalPago from "./ModalPago";
 import api from "../../services/api";
+import { AuthContext } from '../../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { useToast } from '../common/ToastContext';
 export default function CompraEntradas() {
-  const [fecha, setFecha] = useState("");
+  // ahora manejamos fecha como objeto Date o null
+  const [fecha, setFecha] = useState(null);
   const [cantidad, setCantidad] = useState("");
   const [metodoPago, setMetodoPago] = useState("");
   const [mostrarModal, setMostrarModal] = useState(false);
   const [entradasCargadas, setEntradasCargadas] = useState([]);
 
-  const fechaActual = new Date().toISOString().split("T")[0];
+  const fechaActual = new Date();
+
+  // Hooks que deben definirse antes de los handlers que los usan
+  const auth = useContext(AuthContext);
+  const navigate = useNavigate();
+  const toast = useToast();
 
   const handleEntradasChange = (nuevasEntradas) => {
     setEntradasCargadas(nuevasEntradas);
@@ -18,7 +30,12 @@ export default function CompraEntradas() {
 
   const handleConfirmar = () => {
     if (!fecha || !cantidad || !metodoPago) {
-      alert("Por favor completá todos los campos antes de confirmar.");
+      toast.show("Por favor completá todos los campos antes de confirmar.");
+      return;
+    }
+    // Si no está autenticado, mostrar modal de invitación a loguearse
+    if (!auth || !auth.token) {
+      setShowAuthModal(true);
       return;
     }
     // Abrir el modal de configuración para completar edades/tipos
@@ -33,19 +50,56 @@ export default function CompraEntradas() {
   };
 
   const handleConfigurar = () => {
-    if (!cantidad) {
-      alert("Debés ingresar una cantidad antes de configurar.");
-      return;
-    }
-    setMostrarModal(true);
+    // La acción de "Configurar" se eliminó: la configuración ahora sucede
+    // después de presionar 'Confirmar' (si los campos obligatorios están completos).
   };
   const cerrarModal = (datos) => {
     setMostrarModal(false);
     if (datos) {
-      setEntradasCargadas(datos); // guardamos lo que cargó el usuario
-      console.log("Entradas cargadas:", datos);
+      // datos puede venir como { entradas, id_compra }
+      if (datos.entradas) setEntradasCargadas(datos.entradas);
+      console.log("Entradas cargadas:", datos.entradas || datos);
+      
+      // Si vino id_compra y el método de pago actual es tarjeta, calculamos monto y abrimos ModalPago
+      if (datos.id_compra && metodoPago === 'tarjeta') {
+        setIdReservaPago(datos.id_compra);
+        const entradasRecibidas = datos.entradas || [];
+        const total = entradasRecibidas.reduce((acc, e) => acc + (Number(e.precio) || 0), 0);
+        setMontoPago(total);
+        setShowModalPago(true);
+      }
+      // Si el método es efectivo, mostramos toast de éxito
+      if (datos.id_compra && metodoPago === 'efectivo') {
+        toast.show(`Reserva #${datos.id_compra} realizada con éxito. Recibiste un email con los detalles.`);
+        // limpiar formulario
+        setFecha(null);
+        setCantidad('');
+        setMetodoPago('');
+        setEntradasCargadas([]);
+      }
     }
   };
+
+  // estado para modal de pago
+  const [showModalPago, setShowModalPago] = useState(false);
+  const [idReservaPago, setIdReservaPago] = useState(null);
+  const [montoPago, setMontoPago] = useState(null);
+
+  const handlePagoClose = (result) => {
+    setShowModalPago(false);
+    if (result && result.success) {
+      toast.show('Pago procesado y email enviado con la reserva.');
+      // limpiar formulario
+      setFecha(null);
+      setCantidad('');
+      setMetodoPago('');
+      setEntradasCargadas([]);
+      setIdReservaPago(null);
+    }
+  };
+
+  // estado para modal de autenticación
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   return (
     <div
@@ -84,41 +138,38 @@ export default function CompraEntradas() {
               {/* Fecha */}
               <div className="mb-3">
                 <label className="form-label">Fecha</label>
-                <input
-                  type="date"
-                  className="form-control"
-                  min={fechaActual}
-                  value={fecha}
-                  onChange={(e) => setFecha(e.target.value)}
-                />
+                <div className="d-flex align-items-center gap-2">
+                  <div>
+                    <DatePicker
+                      selected={fecha}
+                      onChange={(date) => setFecha(date)}
+                      minDate={fechaActual}
+                      dateFormat="dd/MM/yyyy"
+                      placeholderText="Elegí la fecha de tu visita"
+                      className="form-control"
+                      aria-label="Seleccionar fecha de visita"
+                    />
+                  </div>
+
+                </div>
               </div>
 
-              {/* Cantidad + Configurar */}
-              <div className="d-flex align-items-end justify-content-between mb-3">
-                <div style={{ flex: 1 }}>
-                  <label className="form-label mb-1">
-                    Cantidad de entradas
-                  </label>
-                  <input
-                    type="number"
-                    className="form-control"
-                    min="1"
-                    max="10"
-                    value={cantidad}
-                    onChange={(e) => {
-                      const val = Number(e.target.value);
-                      if (val >= 1 && val <= 10) setCantidad(val);
-                      else if (e.target.value === "") setCantidad("");
-                    }}
-                  />
-                </div>
-                <button
-                  className="btn btn-outline-success ms-3"
-                  style={{ height: "fit-content", marginBottom: "0.25rem" }}
-                  onClick={handleConfigurar}
-                >
-                  Configurar
-                </button>
+              {/* Cantidad */}
+              <div className="mb-3">
+                <label className="form-label mb-1">Cantidad de entradas</label>
+                <input
+                  type="number"
+                  className="form-control"
+                  min="1"
+                  max="10"
+                  value={cantidad}
+                  onChange={(e) => {
+                    const val = Number(e.target.value);
+                    if (val >= 1 && val <= 10) setCantidad(val);
+                    else if (e.target.value === "") setCantidad("");
+                  }}
+                />
+                <small className="text-muted">Máx. 10 entradas por compra.</small>
               </div>
 
               {/* Método de pago */}
@@ -180,6 +231,29 @@ export default function CompraEntradas() {
           entradasIniciales={entradasCargadas} // le pasamos los datos previos
           onChange={handleEntradasChange} // callback para cada cambio
         />
+      )}
+      {showModalPago && idReservaPago && (
+        <ModalPago idReserva={idReservaPago} monto={montoPago} onClose={handlePagoClose} />
+      )}
+      {showAuthModal && (
+        <div className="modal show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+          <div className="modal-dialog modal-md">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Necesitás una cuenta</h5>
+                <button type="button" className="btn-close" onClick={() => setShowAuthModal(false)}></button>
+              </div>
+              <div className="modal-body">
+                <p>Para confirmar una reserva necesitás iniciar sesión o registrarte. Podés hacerlo ahora y continuar con la compra.</p>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" onClick={() => setShowAuthModal(false)}>Cancelar</button>
+                <button type="button" className="btn btn-outline-success" onClick={() => { setShowAuthModal(false); navigate('/registrarse'); }}>Registrarse</button>
+                <button type="button" className="btn btn-success" onClick={() => { setShowAuthModal(false); navigate('/iniciar-sesion'); }}>Iniciar sesión</button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

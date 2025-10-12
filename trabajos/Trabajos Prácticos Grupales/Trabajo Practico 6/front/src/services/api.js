@@ -66,8 +66,17 @@ export async function validarCompra(payload) {
   return handleResponse(res);
 }
 
+export async function procesarPago(data) {
+  const res = await fetch(`${BASE_URL}/pago/procesar_pago/`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...authHeaders() },
+    body: JSON.stringify(data),
+  });
+  return handleResponse(res);
+}
+
 // helper local
 export function saveToken(token) { if (token) localStorage.setItem('access_token', token); }
 export function clearToken() { localStorage.removeItem('access_token'); }
 
-export default { login, register, obtenerEdades, montoTotal, montoUnico, validarCompra, saveToken, clearToken };
+export default { login, register, obtenerEdades, montoTotal, montoUnico, validarCompra, procesarPago, saveToken, clearToken };
