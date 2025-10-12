@@ -1,7 +1,7 @@
 from fastapi.testclient import TestClient
 import pytest
 from src.project.workflow.API.main import app
-from src.common.entradas import VIP, GENERAL
+from src.common.entradas import VIP, REGULAR
 from src.common.pago import EFECTIVO, TARJETA
 
 client = TestClient(app)
@@ -9,7 +9,7 @@ client = TestClient(app)
 def test_obtener_monto_total():
     """Comprueba que el endpoint /monto/ calcula el total correctamente para varios visitantes."""
     # Setup
-    payload = {"visitantes": [{"edad": 20, "tipo_entrada": VIP}, {"edad": 25, "tipo_entrada": GENERAL}]}
+    payload = {"visitantes": [{"edad": 20, "tipo_entrada": VIP}, {"edad": 25, "tipo_entrada": REGULAR}]}
     # Execution
     r = client.post("monto/monto_total/", json=payload)
     # Assertion

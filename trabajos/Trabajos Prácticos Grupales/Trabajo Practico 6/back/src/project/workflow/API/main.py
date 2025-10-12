@@ -10,7 +10,7 @@ from src.common.persistance.database import create_db_and_tables
 from src.project.entities import Reserva, Visitante
 from src.common.persistance.models import Reserva as ReservaModel, Visitante as VisitanteModel
 from contextlib import asynccontextmanager
-from src.project.workflow.API.register.register import router as router_register
+from src.project.workflow.API.register.register import router_register
 
 
 @asynccontextmanager

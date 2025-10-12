@@ -100,6 +100,12 @@ def validar_compra(
             status_code=400,
             detail=f"Error al parsear visitantes: {str(e)}"
         )
+    except ValueError as e:
+        # Validaciones internas (edad, tipo_entrada) fallaron
+        raise HTTPException(
+            status_code=400,
+            detail=f"Error en datos de visitantes: {str(e)}"
+        )
 
     # === VALIDACIÓN FORMA DE PAGO ===
     forma_pago = data.get("forma_pago")

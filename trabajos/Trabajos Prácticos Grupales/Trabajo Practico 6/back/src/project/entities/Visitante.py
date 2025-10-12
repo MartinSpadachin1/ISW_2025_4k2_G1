@@ -1,4 +1,4 @@
-from src.common.entradas import VIP, GENERAL, PRECIO_GENERAL, PRECIO_VIP
+from src.common.entradas import VIP, REGULAR, PRECIO_REGULAR, PRECIO_VIP
 
 
 class Visitante: 
@@ -13,10 +13,13 @@ class Visitante:
 
     def calcular_monto(self, edad: int, tipo_entrada: str) -> float:
         """Calcula el monto a pagar según la edad y el tipo de entrada."""
+        # Validar tipo_entrada
         if tipo_entrada == VIP:
             precio = PRECIO_VIP  # Precio base para entrada VIP
-        elif tipo_entrada == GENERAL:
-            precio = PRECIO_GENERAL  # Precio base para entrada GENERAL
+        elif tipo_entrada == REGULAR:
+            precio = PRECIO_REGULAR  # Precio base para entrada REGULAR
+        else:
+            raise ValueError(f"Tipo de entrada inválido: {tipo_entrada}")
 
         if (edad < 15 or edad >= 60) and edad > 3:
             precio = precio * 0.5  # Descuento del 50% para menores de 15 años o mayores de 60 años

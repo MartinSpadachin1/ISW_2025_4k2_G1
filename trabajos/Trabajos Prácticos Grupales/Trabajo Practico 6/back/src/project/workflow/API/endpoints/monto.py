@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from typing import Dict, Any
-from src.common.entradas import PRECIO_GENERAL, PRECIO_VIP
+from src.common.entradas import PRECIO_REGULAR, PRECIO_VIP
 from src.project.entities.Visitante import Visitante
 from src.project.workflow.compra_calculo import calcular_monto
 
@@ -26,7 +26,7 @@ def obtener_edades() -> Dict[str, Any]:
                 "hasta": 3,
             },
             "vip": 0,
-            "general": 0,
+            "regular": 0,
         },
         "niños": {
             "rango": {
@@ -34,7 +34,7 @@ def obtener_edades() -> Dict[str, Any]:
                 "hasta": 15,
             },
             "vip": PRECIO_VIP * 0.5,
-            "general": PRECIO_GENERAL * 0.5,
+            "regular": PRECIO_REGULAR * 0.5,
         },
         "adultos": {
             "rango": {
@@ -42,7 +42,7 @@ def obtener_edades() -> Dict[str, Any]:
                 "hasta": 65,
             },
             "vip": PRECIO_VIP,
-            "general": PRECIO_GENERAL,
+            "regular": PRECIO_REGULAR,
         },
         "adulto_mayor": {
             "rango": {
@@ -50,7 +50,7 @@ def obtener_edades() -> Dict[str, Any]:
                 "hasta": 120,
             },
             "vip": PRECIO_VIP * 0.5,
-            "general": PRECIO_GENERAL * 0.5,
+            "regular": PRECIO_REGULAR * 0.5,
         },
     }
     return dic

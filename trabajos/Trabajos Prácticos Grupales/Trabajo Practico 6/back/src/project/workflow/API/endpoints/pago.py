@@ -4,8 +4,9 @@ from sqlmodel import Session
 from src.project.workflow.API.login.security import verify_token
 from src.common.persistance.database import get_session
 from src.common.utils import validar_pago
-from src.project.entities.Reserva import Reserva
+from src.project.entities.Reserva import Reserva  # DTO/entidad de dominio (no-ORM)
 from sqlmodel import select
+from src.common.persistance.models import Reserva as ReservaModel
 from src.common.email_utils import send_ticket_email
 from src.common.persistance.models import Reserva as ReservaModel
 
@@ -44,7 +45,7 @@ def procesar_pago(
         )
     
     #TODO: Poner en la reserva que el pago fue realizado (persistencia)
-    statement = select(Reserva).where(Reserva.id == data.get("id_reserva"), Reserva.mail == email)
+    statement = select(ReservaModel).where(ReservaModel.id == data.get("id_reserva"), ReservaModel.mail == email)
     reserva = session.exec(statement).first()
 
     if not reserva:
@@ -62,7 +63,7 @@ def procesar_pago(
     send_ticket_email(recipient_email=email, reserva=reserva)
 
     return {
-        "message": "Pago procesado exitosamente y entradas enviadas por email",
+        "message": "Pago procesado exitosamente",
         "email": email,
         "data": data,
         "reserva_id": reserva.id

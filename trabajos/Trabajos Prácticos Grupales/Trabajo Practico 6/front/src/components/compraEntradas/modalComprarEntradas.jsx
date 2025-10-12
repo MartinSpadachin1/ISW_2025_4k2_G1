@@ -111,7 +111,7 @@ export default function ModalComprarEntradas({
     try {
       const visitantes = entradas.map((e) => ({
         edad: Number(e.edad),
-        tipo_entrada: e.tipo === "vip" ? "vip" : "general",
+        tipo_entrada: e.tipo === "vip" ? "vip" : "regular",
       }));
 
       const payload = {
@@ -171,7 +171,7 @@ export default function ModalComprarEntradas({
                         <th>Categoría</th>
                         <th>Rango de Edad</th>
                         <th>Precio VIP</th>
-                        <th>Precio General</th>
+                        <th>Precio Regular</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -180,7 +180,7 @@ export default function ModalComprarEntradas({
                           <td>{categoria.replace("_", " ")}</td>
                           <td>{datos.rango.desde} - {datos.rango.hasta}</td>
                           <td>${datos.vip.toFixed(2)}</td>
-                          <td>${datos.general.toFixed(2)}</td>
+                          <td>${datos.regular.toFixed(2)}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -234,18 +234,18 @@ export default function ModalComprarEntradas({
                                 className="form-check-input"
                                 type="radio"
                                 name={`tipo${i}`}
-                                id={`general${i}`}
-                                value="general"
-                                checked={entrada.tipo === "general"}
+                                id={`regular${i}`}
+                                value="regular"
+                                checked={entrada.tipo === "regular"}
                                 onChange={(e) =>
                                   handleChange(i, "tipo", e.target.value)
                                 }
                               />
                               <label
                                 className="form-check-label"
-                                htmlFor={`general${i}`}
+                                htmlFor={`regular${i}`}
                               >
-                                General
+                                Regular
                               </label>
                             </div>
                           </div>

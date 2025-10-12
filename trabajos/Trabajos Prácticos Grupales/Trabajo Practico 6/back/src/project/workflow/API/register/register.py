@@ -9,7 +9,7 @@ from src.common.persistance.models import Usuario
 from src.common.persistance.database import get_session
 from src.common.utils import validar_mail
 
-router = APIRouter()
+router_register = APIRouter()
 
 class UserRegister(BaseModel):
     nombre: str = Field(min_length=1, max_length=50)
@@ -19,7 +19,7 @@ class UserRegister(BaseModel):
 '''def hash_password(password: str) -> str:
     return pwd_context.hash(password)'''
 
-@router.post("/register", status_code=201)
+@router_register.post("/register", status_code=201)
 def register_user(user: UserRegister,
                   session: Session = Depends(get_session)):
     

@@ -8,6 +8,7 @@ from src.common.persistance.models import Usuario
 TEST_HASH = "mocked_hashed_password_for_tests" 
 TEST_EMAIL = "new_user@example.com"
 TEST_PASSWORD = "password1234"
+TEST_NAME = "New User"
 
 
 
@@ -21,6 +22,7 @@ def test_register_user_ok(mock_hash_password, client_con_db, session: Session):
     """
     # Setup
     payload = {
+        "nombre": TEST_NAME,
         "email": TEST_EMAIL,
         "password": TEST_PASSWORD
     }
@@ -55,11 +57,12 @@ def test_register_user_existing_email_fails(mock_hash_password, client_con_db, s
     Verifica que el registro falle con status 400 si el email ya existe.
     """
     # Setup: Pre-insertamos el usuario directamente en la base de datos de prueba
-    existing_user = Usuario(email=TEST_EMAIL, hashed_password=TEST_HASH)
+    existing_user = Usuario(nombre=TEST_NAME, email=TEST_EMAIL, hashed_password=TEST_HASH)
     session.add(existing_user)
     session.commit()
     
     payload = {
+        "nombre": "Another User",
         "email": TEST_EMAIL, # Intentamos registrar el mismo email
         "password": TEST_PASSWORD
     }
@@ -68,7 +71,7 @@ def test_register_user_existing_email_fails(mock_hash_password, client_con_db, s
     r = client_con_db.post("/user/register", json=payload)
 
     # Assertion
-    assert r.status_code == 400
+    assert r.status_code == 400, f"Esperaba 400, obtuve {r.status_code}. Respuesta: {r.json()}"
     assert r.json().get("detail") == "El mail ya está registrado"
     
     # Verificamos que hash_password NO fue llamado, ya que el código debe fallar
@@ -83,6 +86,7 @@ def test_register_user_existing_bad_email_fails(mock_hash_password, client_con_d
     # Setup: Pre-insertamos el usuario directamente en la base de datos de prueba
     TEST_EMAIL = "bad_email_format"
     payload = {
+        "nombre": "Bad",
         "email": TEST_EMAIL, # Intentamos registrar el mismo email
         "password": TEST_PASSWORD
     }

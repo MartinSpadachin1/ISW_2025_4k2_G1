@@ -9,6 +9,7 @@ from src.common.persistance.models import Usuario
 TEST_PASSWORD = "password_secreta"
 TEST_EMAIL = "test_user@example.com"
 TEST_HASH = "fake_hashed_password_123" # Valor simulado
+TEST_NAME = "Test User"
 
 
 @pytest.fixture(scope="function")
@@ -25,6 +26,7 @@ def setup_user(session): # Solo necesita 'session' como argumento inyectado
         
         # 2. Crear la instancia del usuario
         test_user = Usuario(
+            nombre= TEST_NAME,
             email=TEST_EMAIL,
             hashed_password=TEST_HASH # Usamos la constante de hash simulado
             # Añade otros campos obligatorios aquí
