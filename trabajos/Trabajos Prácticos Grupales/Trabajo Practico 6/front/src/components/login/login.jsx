@@ -1,8 +1,9 @@
 // Login.jsx
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Claudia from '../../assets/claudia.png';
 import { Link, useNavigate } from 'react-router-dom';
-import api, { saveToken } from '../../services/api';
+import api from '../../services/api';
+import { AuthContext } from '../../contexts/AuthContext';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -11,6 +12,7 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const auth = useContext(AuthContext);
   return (
     <div
       className="w-100 d-flex align-items-center justify-content-center p-3 p-md-4"
@@ -111,9 +113,9 @@ export default function Login() {
                   setError(null);
                   setLoading(true);
                   try {
-                    const res = await api.login(email, password);
+                    if (!auth) throw new Error('AuthContext no disponible');
+                    const res = await auth.login(email, password);
                     if (res && res.access_token) {
-                      saveToken(res.access_token);
                       navigate('/');
                     } else {
                       setError('Respuesta inválida del servidor');

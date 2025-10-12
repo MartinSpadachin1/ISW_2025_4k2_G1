@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useContext } from "react";
 import logo from "../../../public/EHP-Logo.png";
 import { Link } from "react-router-dom";
 import "../../App.css";
+import { AuthContext } from '../../contexts/AuthContext';
 
 const Navbar = () => {
   const listaItemsNavbar = ["Inicio", "Quiénes Somos", "Comprar Entradas"];
   const listaBotones = ["Registrarse", "Iniciar Sesión"];
+  const auth = useContext(AuthContext);
 
   return (
     <nav
@@ -67,26 +69,34 @@ const Navbar = () => {
 
           {/* Botones responsive */}
           <div className="d-flex align-items-center gap-2 flex-wrap">
-            {listaBotones.map((boton, index) => (
-              <Link
-                key={index}
-                to={
-                  boton === "Registrarse"
-                    ? "/registrarse"
-                    : boton === "Iniciar Sesión"
-                    ? "/iniciar-sesion"
-                    : "#"
-                }
-                className="btn btn-success text-white fw-semibold px-3 py-2"
-                style={{
-                  border: "none",
-                  fontSize: "0.95rem",
-                  transition: "all 0.2s ease-in-out",
-                }}
-              >
-                {boton}
-              </Link>
-            ))}
+            {/* Si el usuario está autenticado mostrar su email (o nombre) y botón de logout */}
+            {auth && auth.token ? (
+              <>
+                <span className="text-white me-2" style={{ fontWeight: 500 }}>{auth.user?.email || 'Usuario'}</span>
+                <button className="btn btn-outline-light" onClick={() => auth.logout()}>Cerrar sesión</button>
+              </>
+            ) : (
+              listaBotones.map((boton, index) => (
+                <Link
+                  key={index}
+                  to={
+                    boton === "Registrarse"
+                      ? "/registrarse"
+                      : boton === "Iniciar Sesión"
+                      ? "/iniciar-sesion"
+                      : "#"
+                  }
+                  className="btn btn-success text-white fw-semibold px-3 py-2"
+                  style={{
+                    border: "none",
+                    fontSize: "0.95rem",
+                    transition: "all 0.2s ease-in-out",
+                  }}
+                >
+                  {boton}
+                </Link>
+              ))
+            )}
           </div>
         </div>
       </div>
