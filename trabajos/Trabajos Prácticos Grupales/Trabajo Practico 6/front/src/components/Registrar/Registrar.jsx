@@ -14,6 +14,23 @@ export default function Registrar() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const toast = useToast();
+  const [fieldErrors, setFieldErrors] = useState({});
+
+  // Validaciones
+  function validateFront() {
+    const errs = {};
+    if (!nombre || nombre.trim().length === 0) {
+      errs.nombre = ['El nombre es obligatorio'];
+    }
+    const emailRe = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+    if (!email || !emailRe.test(email)) {
+      errs.email = ['Formato de email inválido'];
+    }
+    if (!password || password.length < 8) {
+      errs.password = ['La contraseña debe tener al menos 8 caracteres'];
+    }
+    return errs;
+  }
   return (
     <div
       className="w-100 d-flex align-items-center justify-content-center p-3 p-md-4"
@@ -60,6 +77,9 @@ export default function Registrar() {
                   value={nombre}
                   onChange={(e) => setNombre(e.target.value)}
                 />
+                {fieldErrors && fieldErrors.nombre && (
+                  <div className="invalid-feedback d-block">{fieldErrors.nombre.join(', ')}</div>
+                )}
               </div>
 
               {/* Campo Email */}
@@ -73,6 +93,9 @@ export default function Registrar() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
+                {fieldErrors && fieldErrors.email && (
+                  <div className="invalid-feedback d-block">{fieldErrors.email.join(', ')}</div>
+                )}
               </div>
 
               {/* Campo Contraseña */}
@@ -107,6 +130,9 @@ export default function Registrar() {
                     {showPassword ? 'Ocultar' : 'Mostrar'}
                   </span>
                 </div>
+                {fieldErrors && fieldErrors.password && (
+                  <div className="invalid-feedback d-block">{fieldErrors.password.join(', ')}</div>
+                )}
               </div>
 
               {error && <div className="alert alert-danger">{error}</div>}
@@ -124,9 +150,16 @@ export default function Registrar() {
               </div>
 
               <div className="d-flex justify-content-between">
-                <button className="btn btn-secondary" onClick={() => { setNombre(''); setEmail(''); setPassword(''); setError(null); }}>Cancelar</button>
+                <button className="btn btn-secondary" onClick={() => { setNombre(''); setEmail(''); setPassword(''); setError(null); setFieldErrors({}); }}>Cancelar</button>
                 <button className="btn btn-success" onClick={async () => {
                   setError(null);
+                  setFieldErrors({});
+                  // validación en front
+                  const frontErrs = validateFront();
+                  if (Object.keys(frontErrs).length > 0) {
+                    setFieldErrors(frontErrs);
+                    return;
+                  }
                   setLoading(true);
                   try {
                     await api.register(nombre, email, password);
