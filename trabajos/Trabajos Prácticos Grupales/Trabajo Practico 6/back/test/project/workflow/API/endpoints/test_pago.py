@@ -16,6 +16,7 @@ def test_procesar_pago_ok(client_con_db, session):
     usando un token mockeado y la base de datos en memoria.
     """
 
+    # Setup
     client = client_con_db
 
     # Crear una reserva de prueba en la DB en memoria para este test
@@ -30,7 +31,7 @@ def test_procesar_pago_ok(client_con_db, session):
         "cvv": "123",
         "fecha_expiracion": "2099-12-31"  # Fecha futura válida
     }
-
+    # Execution
     r = client.post("/pago/procesar_pago/", json=payload)
 
     # Assertions
@@ -47,7 +48,7 @@ def test_procesar_pago_invalido(client_con_db, session):
     """
     Verifica que /procesar_pago/ falle cuando se envía una tarjeta inválida.
     """
-
+    # Setup
     client = client_con_db
 
     # Crear reserva para este test también
@@ -62,9 +63,9 @@ def test_procesar_pago_invalido(client_con_db, session):
         "cvv": "xxx",             # CVV inválido
         "fecha_expiracion": "2020-01-01"  # Fecha expirada
     }
-
+    # Execution
     r = client.post("/pago/procesar_pago/", json=payload)
-
+    # Assertions
     assert r.status_code == 400, f"Se esperaba 400, se obtuvo {r.status_code}. Respuesta: {r.json()}"
     body = r.json()
     assert body.get("detail") == "Datos de pago inválidos"

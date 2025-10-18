@@ -89,7 +89,7 @@ def test_login_ok_devuelve_token(mock_verify_password, client_con_db, setup_user
 
 def test_login_falla_con_email_no_registrado(client_con_db):
     """Verifica que falle el login si el email no existe en la DB."""
-    
+    # Setup
     payload = {
         "email": "non_existent_user@example.com",
         "password": TEST_PASSWORD 
