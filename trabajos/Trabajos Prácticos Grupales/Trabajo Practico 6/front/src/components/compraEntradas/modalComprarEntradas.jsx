@@ -49,7 +49,10 @@ export default function ModalComprarEntradas({
 
  const handleChange = (index, field, value) => {
   const nuevasEntradas = [...entradas];
-  if (field === "edad" && value < 0) return;
+  value = field === "edad" ? Number(value) : value;
+  if (field === "edad" && (value < 0 || !Number.isInteger(value))) {
+    return;
+  }
 
   nuevasEntradas[index][field] = value;
   setEntradas(nuevasEntradas);

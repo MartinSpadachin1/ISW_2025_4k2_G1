@@ -83,7 +83,7 @@ def test_login_ok_devuelve_token(mock_verify_password, client_con_db, setup_user
     except Exception as e:
         pytest.fail(f"Fallo al decodificar el token: {e}")
         
-    assert decoded_token.get("sub") == TEST_EMAIL
+    assert decoded_token.get("sub") == TEST_EMAIL, f"El 'sub' del token no coincide. Esperado: {TEST_EMAIL}, Obtenido: {decoded_token.get('sub')}"
     assert "exp" in decoded_token
 
 
@@ -99,7 +99,7 @@ def test_login_falla_con_email_no_registrado(client_con_db):
     r = client_con_db.post("/auth/login", json=payload)
 
     # Assertions
-    assert r.status_code == 400
+    assert r.status_code == 400, f"Status code inesperado: {r.status_code}"
     assert r.json().get("detail") == "Email o contraseña incorrectos"
 
 @mock.patch('src.project.workflow.API.login.login.verify_password', autospec=True)
@@ -119,7 +119,7 @@ def test_login_falla_con_password_incorrecta(mock_verify_password, client_con_db
     r = client_con_db.post("/auth/login", json=payload)
 
     # Assertions
-    assert r.status_code == 400
+    assert r.status_code == 400, f"Status code inesperado: {r.status_code}"
     assert r.json().get("detail") == "Email o contraseña incorrectos"
     
     # Verificación de la llamada

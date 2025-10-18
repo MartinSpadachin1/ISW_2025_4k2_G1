@@ -165,7 +165,7 @@ export default function CompraEntradas() {
                   value={cantidad}
                   onChange={(e) => {
                     const val = Number(e.target.value);
-                    if (val >= 1 && val <= 10) setCantidad(val);
+                    if (val >= 1 && val <= 10 && Number.isInteger(val)) setCantidad(val);
                     else if (e.target.value === "") setCantidad("");
                   }}
                 />

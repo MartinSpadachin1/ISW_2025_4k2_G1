@@ -111,16 +111,6 @@ export default function ModalPago({ idReserva, monto = null, onClose }) {
                 <input className="form-control" value={vencimiento} onChange={e => setVencimiento(e.target.value)} placeholder="YYYY-MM-DD" />
               </div>
             </div>
-            <div className="d-flex gap-2">
-              <div className="mb-2" style={{ flex: 1 }}>
-                <label className="form-label">CVV</label>
-                <input className="form-control" value={cvv} onChange={e => setCvv(e.target.value.replace(/\D/g, ''))} placeholder="123" inputMode="numeric" />
-              </div>
-              <div className="mb-2" style={{ width: 160 }}>
-                <label className="form-label">Vencimiento</label>
-                <input className="form-control" value={vencimiento} onChange={e => setVencimiento(e.target.value)} placeholder="YYYY-MM-DD" />
-              </div>
-            </div>
           </div>
           <div className="modal-footer d-flex flex-column align-items-stretch gap-2">
             <div style={{ fontSize: 12, color: '#666' }}>Tus datos estarán seguros</div>

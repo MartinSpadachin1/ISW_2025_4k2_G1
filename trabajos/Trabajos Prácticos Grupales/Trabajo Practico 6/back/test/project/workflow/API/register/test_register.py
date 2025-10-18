@@ -95,7 +95,7 @@ def test_register_user_existing_bad_email_fails(mock_hash_password, client_con_d
     r = client_con_db.post("/user/register", json=payload)
 
     # Assertion
-    assert r.status_code == 400
+    assert r.status_code == 400, f"Esperaba 400, obtuve {r.status_code}. Respuesta: {r.json()}"
     assert r.json().get("detail") == "El mail no es válido"
     
     # Verificamos que hash_password NO fue llamado, ya que el código debe fallar
