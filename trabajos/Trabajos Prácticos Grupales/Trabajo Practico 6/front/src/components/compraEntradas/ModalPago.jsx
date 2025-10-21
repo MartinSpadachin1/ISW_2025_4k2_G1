@@ -30,18 +30,18 @@ export default function ModalPago({ idReserva, monto = null, onClose }) {
       setError('Completá todos los campos de la tarjeta');
       return;
     }
-    try {
-      setLoading(true);
-      // Enviar el número sin espacios
-      const payload = {
-        id_reserva: idReserva,
-        numero_tarjeta: numero.replace(/\s+/g, ''),
-        cvv,
-        fecha_expiracion: vencimiento,
-      };
-  const res = await api.procesarPago(payload);
-  toast.show(res?.message || 'Pago simulado con éxito');
-  onClose && onClose({ success: true, reserva_id: idReserva });
+      try {
+        setLoading(true);
+        // Enviar el número sin espacios
+        const payload = {
+          id_reserva: idReserva,
+          numero_tarjeta: numero.replace(/\s+/g, ''),
+          cvv,
+          fecha_expiracion: vencimiento,
+        };
+        const res = await api.procesarPago(payload);
+        // No mostrar toast aquí; el padre abrirá el modal de confirmación
+        onClose && onClose({ success: true });
     } catch (err) {
       setError(err.detail || err.message || 'Error procesando el pago');
     } finally {

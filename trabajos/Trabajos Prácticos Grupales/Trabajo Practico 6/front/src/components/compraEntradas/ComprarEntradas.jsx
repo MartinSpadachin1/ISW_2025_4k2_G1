@@ -5,6 +5,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import Animalito from "../../assets/colibri.jpg";
 import ModalComprarEntradas from "./modalComprarEntradas";
 import ModalPago from "./ModalPago";
+import ModalConfirmacion from "./ModalConfirmacion";
 import api from "../../services/api";
 import { AuthContext } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -16,6 +17,8 @@ export default function CompraEntradas() {
   const [metodoPago, setMetodoPago] = useState("");
   const [mostrarModal, setMostrarModal] = useState(false);
   const [entradasCargadas, setEntradasCargadas] = useState([]);
+  const [showConfirmacion, setShowConfirmacion] = useState(false);
+  const [confirmacionData, setConfirmacionData] = useState({ idReserva: null, entradas: [], fecha: null });
 
   const fechaActual = new Date();
 
@@ -49,10 +52,6 @@ export default function CompraEntradas() {
     setMostrarModal(false);
   };
 
-  const handleConfigurar = () => {
-    // La acción de "Configurar" se eliminó: la configuración ahora sucede
-    // después de presionar 'Confirmar' (si los campos obligatorios están completos).
-  };
   const cerrarModal = (datos) => {
     setMostrarModal(false);
     if (datos) {
@@ -70,7 +69,11 @@ export default function CompraEntradas() {
       }
       // Si el método es efectivo, mostramos toast de éxito
       if (datos.id_compra && metodoPago === 'efectivo') {
-        toast.show(`Reserva #${datos.id_compra} realizada con éxito. Recibiste un email con los detalles.`);
+        // abrir modal de confirmación en lugar de toast
+  const entradasRecibidas = datos.entradas || [];
+        const total = entradasRecibidas.reduce((acc, e) => acc + (Number(e.precio) || 0), 0);
+        setConfirmacionData({ idReserva: datos.id_compra, entradas: datos.entradas || [], fecha, monto: total, metodoPago: metodoPago });
+        setShowConfirmacion(true);
         // limpiar formulario
         setFecha(null);
         setCantidad('');
@@ -88,7 +91,9 @@ export default function CompraEntradas() {
   const handlePagoClose = (result) => {
     setShowModalPago(false);
     if (result && result.success) {
-      toast.show('Pago procesado y email enviado con la reserva.');
+      // Mostrar modal de confirmación en lugar de toast
+  setConfirmacionData({ idReserva: idReservaPago, entradas: entradasCargadas, fecha, monto: montoPago, metodoPago: 'tarjeta' });
+      setShowConfirmacion(true);
       // limpiar formulario
       setFecha(null);
       setCantidad('');
@@ -139,7 +144,7 @@ export default function CompraEntradas() {
               <div className="mb-3">
                 <label className="form-label">Fecha</label>
                 <div className="d-flex align-items-center gap-2">
-                  <div>
+                  <div style={{ position: 'relative', minWidth: 220 }}>
                     <DatePicker
                       selected={fecha}
                       onChange={(date) => setFecha(date)}
@@ -151,7 +156,10 @@ export default function CompraEntradas() {
                     />
                   </div>
 
+                  {/* Aclaración: no abre los lunes ni en Navidad (25/12) y Año Nuevo (01/01) */}
+                  <div className="form-text text-muted mt-1">Aclaración: el parque <strong>no abre</strong> los días <strong>lunes</strong> ni los <strong>días festivos (25/12 y 01/01)</strong>. Por favor tenlo en cuenta al elegir la fecha.</div>
                 </div>
+                
               </div>
 
               {/* Cantidad */}
@@ -254,6 +262,9 @@ export default function CompraEntradas() {
             </div>
           </div>
         </div>
+      )}
+      {showConfirmacion && (
+        <ModalConfirmacion idReserva={confirmacionData.idReserva} entradas={confirmacionData.entradas} fecha={confirmacionData.fecha} monto={confirmacionData.monto} metodoPago={confirmacionData.metodoPago} onClose={() => setShowConfirmacion(false)} />
       )}
     </div>
   );
