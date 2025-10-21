@@ -4,7 +4,7 @@ from unittest import mock
 from src.project.workflow.API.login.login import create_access_token 
 from src.project.workflow.API.config import SECRET_KEY, ALGORITHM
 from src.common.persistance.models import Usuario
-
+from jose import jwt
 
 TEST_PASSWORD = "password_secreta"
 TEST_EMAIL = "test_user@example.com"
@@ -72,8 +72,7 @@ def test_login_ok_devuelve_token(mock_verify_password, client_con_db, setup_user
     # Verificación de la llamada: Aseguramos que la verificación de contraseña fue llamada
     mock_verify_password.assert_called_once_with(TEST_PASSWORD, setup_user.hashed_password)
     
-    # Necesitarás una función auxiliar para decodificar si no la tienes
-    from jose import jwt
+  
     
     token = body["access_token"]
     
